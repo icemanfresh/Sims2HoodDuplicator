@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.IO;
+using System.Threading;
 
 namespace Sims2HoodDuplicator
 {
@@ -8,7 +9,7 @@ namespace Sims2HoodDuplicator
     {
         public MainForm()
         {
-            if (Functions.GetNeighborhoodsDirectory() == null)
+            if (Functions.GetUserNeighborhoodsDirectory() == null)
             {
                 MessageBox.Show(Strings.Not_Installed);
                 return;
@@ -69,6 +70,10 @@ namespace Sims2HoodDuplicator
         private System.Windows.Forms.ProgressBar CopyProgressBar;
         private System.Windows.Forms.PictureBox NeighborhoodImageBox;
 
+        private Thread DuplicationThread;
+        private readonly string UserNeighborhoodsDirectory = Functions.GetUserNeighborhoodsDirectory();
+        private string CurrentCreatedFolder;
+
         public class Neighborhood
         {
             private string myName;
@@ -100,26 +105,74 @@ namespace Sims2HoodDuplicator
         private void DuplicateButton_Click(object sender, EventArgs e)
         {
             DuplicateButton.Enabled = false;
-            var neighborhood = ((Neighborhood)NeighborhoodDropdown.SelectedItem);
-            try
+            if (DuplicationThread == null)
             {
-                string newNeighborhoodName = Functions.DuplicateNeighborhoodTemplate(neighborhood.Directory);
-                if (newNeighborhoodName == null)
+                CurrentCreatedFolder = Functions.GetNextUnusedNeighborhoodFolder();
+                var neighborhood = ((Neighborhood)NeighborhoodDropdown.SelectedItem);
+                DuplicationThread = new Thread(() =>
                 {
-                    MessageBox.Show(String.Format(Strings.Error_Copying, neighborhood.Name), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    MessageBox.Show(String.Format(Strings.Success, newNeighborhoodName));
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(String.Format(Strings.Error_Copying, neighborhood.Name), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
+                    try
+                    {
+                        string newNeighborhoodName = Functions.DuplicateNeighborhoodTemplate(neighborhood.Directory, CopyProgressBar);
+                        if (newNeighborhoodName == null)
+                        {
+                            MainPanel.Invoke(new Action(() =>
+                            {
+                                DuplicateButton.Enabled = false;
+                                MessageBox.Show(string.Format(Strings.Error_Copying, neighborhood.Name), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }));
+                        }
+                        else
+                        {
+                            MainPanel.Invoke(new Action(() =>
+                            {
+                                DuplicateButton.Enabled = false;
+                                MessageBox.Show(string.Format(Strings.Success, newNeighborhoodName));
+                            }));
+                        }
+                    }
+                    catch (ThreadAbortException ex) { }
+                    catch (Exception ex)
+                    {
+                        MainPanel.Invoke(new Action(() =>
+                        {
+                            DuplicateButton.Enabled = false;
+                            MessageBox.Show(string.Format(Strings.Error_Copying, neighborhood.Name), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }));
+                    }
+                    finally
+                    {
+                        DuplicationThread = null;
+                        MainPanel.Invoke(new Action(() =>
+                        {
+                            CopyProgressBar.Value = 0;
+                            DuplicateButton.Text = Strings.Duplicate;
+                            DuplicateButton.Enabled = true;
+                        }));
+                    }
+                });
+                DuplicationThread.Start();
+                DuplicateButton.Text = Strings.Cancel;
                 DuplicateButton.Enabled = true;
+            }
+            else
+            {
+                DuplicationThread.Abort();
+                new Thread(() =>
+                {
+                    string createdDirectory = Path.Combine(UserNeighborhoodsDirectory, CurrentCreatedFolder);
+                    if (Directory.Exists(createdDirectory))
+                    {
+                        Directory.Delete(createdDirectory, true);
+                    }
+                    DuplicationThread = null;
+                    MainPanel.Invoke(new Action(() =>
+                    {
+                        CopyProgressBar.Value = 0;
+                        DuplicateButton.Text = Strings.Duplicate;
+                        DuplicateButton.Enabled = true;
+                    }));
+                }).Start();
             }
         }
 

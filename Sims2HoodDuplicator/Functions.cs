@@ -2,12 +2,13 @@
 using System;
 using System.Linq;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Sims2HoodDuplicator
 {
     internal class Functions
     {
-        internal static string GetNeighborhoodsDirectory()
+        internal static string GetUserNeighborhoodsDirectory()
         {
             string keyName = String.Format(@"Software{0}\EA Games\The Sims 2", Environment.Is64BitProcess ? @"\WOW6432Node" : "");
             string valueName = "DisplayName";
@@ -39,7 +40,7 @@ namespace Sims2HoodDuplicator
             return Path.Combine(installationDir, "TSData", "Res", "UserData", "Neighborhoods");
         }
 
-        internal static string DuplicateNeighborhoodTemplate(string sourceDir)
+        internal static string DuplicateNeighborhoodTemplate(string sourceDir, ProgressBar progressBar = null)
         {
             string newFolderName = GetNextUnusedNeighborhoodFolder();
             if (newFolderName == null)
@@ -47,20 +48,31 @@ namespace Sims2HoodDuplicator
                 return null;
             }
 
-            string neighborhoodsDir = GetNeighborhoodsDirectory();
+            string neighborhoodsDir = GetUserNeighborhoodsDirectory();
             if (!Directory.Exists(neighborhoodsDir))
             {
                 Directory.CreateDirectory(neighborhoodsDir);
             }
-            string newDirectory = Path.Combine(GetNeighborhoodsDirectory(), newFolderName);
+
+            string newDirectory = Path.Combine(GetUserNeighborhoodsDirectory(), newFolderName);
             string sourceFolderName = Path.GetFileName(sourceDir);
             string destFolderName = Path.GetFileName(newDirectory);
-            DirectoryCopy(sourceDir, newDirectory, sourceFolderName, destFolderName);
+            CopiedBytes = 0;
+            TotalBytes = DirSize(new DirectoryInfo(sourceDir));
+            if (TotalBytes == 0)
+            {
+                TotalBytes = 1;
+                if (progressBar != null)
+                {
+                    progressBar.Value = 100;
+                }
+            }
+            DirectoryCopy(sourceDir, newDirectory, sourceFolderName, destFolderName, progressBar);
 
             return newFolderName;
         }
 
-        private static void DirectoryCopy(string sourceDirName, string destDirName, string sourceFolderName, string destFolderName)
+        private static void DirectoryCopy(string sourceDirName, string destDirName, string sourceFolderName, string destFolderName, ProgressBar progressBar = null)
         {
             DirectoryInfo dir = new DirectoryInfo(sourceDirName);
             DirectoryInfo[] dirs = dir.GetDirectories();  
@@ -76,18 +88,41 @@ namespace Sims2HoodDuplicator
                 }
                 string tempPath = Path.Combine(destDirName, fileName);
                 file.CopyTo(tempPath, false);
+                CopiedBytes += file.Length;
+                progressBar?.Invoke(new Action(() => progressBar.Value = (int) (((double) CopiedBytes / TotalBytes) * 100)));
             }
 
             foreach (DirectoryInfo subdir in dirs)
             {
                 string tempPath = Path.Combine(destDirName, subdir.Name);
-                DirectoryCopy(subdir.FullName, tempPath, sourceFolderName, destFolderName);
+                DirectoryCopy(subdir.FullName, tempPath, sourceFolderName, destFolderName, progressBar);
             }
+        }
+
+        internal static long DirSize(DirectoryInfo d)
+        {
+            long size = 0;
+            FileInfo[] fis = d.GetFiles();
+            foreach (FileInfo fi in fis)
+            {
+                size += fi.Length;
+            }
+            DirectoryInfo[] dis = d.GetDirectories();
+            foreach (DirectoryInfo di in dis)
+            {
+                size += DirSize(di);
+            }
+            return size;
         }
 
         internal static string GetNextUnusedNeighborhoodFolder()
         {
-            string[] neighborhoods = Directory.GetDirectories(GetNeighborhoodsDirectory()).Select(dir => Path.GetFileName(dir)).ToArray();
+            string userNeighborhoodsDirectory = GetUserNeighborhoodsDirectory();
+            if (!Directory.Exists(userNeighborhoodsDirectory))
+            {
+                Directory.CreateDirectory(userNeighborhoodsDirectory);
+            }
+            string[] neighborhoods = Directory.GetDirectories(userNeighborhoodsDirectory).Select(dir => Path.GetFileName(dir)).ToArray();
             char initialLetter = 'N';
             short neighborhoodNumber = 1;
             while (true)
@@ -118,5 +153,7 @@ namespace Sims2HoodDuplicator
                 }
             }
         }
+
+        private static long CopiedBytes, TotalBytes;
     }
 }

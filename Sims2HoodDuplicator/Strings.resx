@@ -120,6 +120,9 @@
   <data name="Belladonna Cove" xml:space="preserve">
     <value>Belladonna Cove</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="Desiderata Valley" xml:space="preserve">
     <value>Desiderata Valley</value>
   </data>

@@ -89,6 +89,7 @@ namespace Sims2HoodDuplicator
             // NeighborhoodImageBox
             // 
             this.NeighborhoodImageBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.NeighborhoodImageBox.BackColor = System.Drawing.SystemColors.ControlDark;
             this.NeighborhoodImageBox.Location = new System.Drawing.Point(112, 16);
             this.NeighborhoodImageBox.Name = "NeighborhoodImageBox";
             this.NeighborhoodImageBox.Size = new System.Drawing.Size(200, 150);

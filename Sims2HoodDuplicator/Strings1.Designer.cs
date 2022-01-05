@@ -70,6 +70,15 @@ namespace Sims2HoodDuplicator {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Desiderata Valley.
         /// </summary>
         public static string Desiderata_Valley {
