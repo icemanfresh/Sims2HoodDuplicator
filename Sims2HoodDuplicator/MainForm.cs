@@ -167,36 +167,22 @@ namespace Sims2HoodDuplicator
                     RefreshDropDown();
                     return;
                 }
-                DuplicationThread = new Thread(() =>
+                LaunchDuplicationThread(neighborhood);
+            }
+            else
+            {
+                CancelDuplication();
+            }
+        }
+
+        private void LaunchDuplicationThread(Neighborhood neighborhood)
+        {
+            DuplicationThread = new Thread(() =>
+            {
+                try
                 {
-                    try
-                    {
-                        string newNeighborhoodName = Functions.DuplicateNeighborhoodTemplate(neighborhood.Directory, CopyProgressBar);
-                        if (newNeighborhoodName == null)
-                        {
-                            MainPanel.Invoke(new Action(() =>
-                            {
-                                ToggleUIEnabled(false);
-                                MessageBox.Show(string.Format(Strings.Error_Copying, neighborhood.Name), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }));
-                        }
-                        else
-                        {
-                            MainPanel.Invoke(new Action(() =>
-                            {
-                                ToggleUIEnabled(false);
-                                if (ExistingRadioButton.Checked)
-                                {
-                                    Neighborhood newNeighborhood = new Neighborhood(newNeighborhoodName, Path.Combine(UserNeighborhoodsDirectory, newNeighborhoodName));
-                                    ExistingNeighborhoods.Add(newNeighborhood);
-                                    NeighborhoodDropdown.Items.Add(newNeighborhood);
-                                }
-                                MessageBox.Show(string.Format(Strings.Success, newNeighborhoodName));
-                            }));
-                        }
-                    }
-                    catch (ThreadAbortException ex) { }
-                    catch (Exception ex)
+                    string newNeighborhoodName = Functions.DuplicateNeighborhoodTemplate(neighborhood.Directory, CopyProgressBar);
+                    if (newNeighborhoodName == null)
                     {
                         MainPanel.Invoke(new Action(() =>
                         {
@@ -204,31 +190,32 @@ namespace Sims2HoodDuplicator
                             MessageBox.Show(string.Format(Strings.Error_Copying, neighborhood.Name), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }));
                     }
-                    finally
+                    else
                     {
-                        DuplicationThread = null;
                         MainPanel.Invoke(new Action(() =>
                         {
-                            CopyProgressBar.Value = 0;
-                            DuplicateButton.Text = Strings.Duplicate;
-                            ToggleUIEnabled(true);
+                            ToggleUIEnabled(false);
+                            if (ExistingRadioButton.Checked)
+                            {
+                                Neighborhood newNeighborhood = new Neighborhood(newNeighborhoodName, Path.Combine(UserNeighborhoodsDirectory, newNeighborhoodName));
+                                ExistingNeighborhoods.Add(newNeighborhood);
+                                NeighborhoodDropdown.Items.Add(newNeighborhood);
+                            }
+                            MessageBox.Show(string.Format(Strings.Success, newNeighborhoodName));
                         }));
                     }
-                });
-                DuplicationThread.Start();
-                DuplicateButton.Text = Strings.Cancel;
-                DuplicateButton.Enabled = true;
-            }
-            else
-            {
-                DuplicationThread.Abort();
-                new Thread(() =>
+                }
+                catch (ThreadAbortException ex) { }
+                catch (Exception ex)
                 {
-                    string createdDirectory = Path.Combine(UserNeighborhoodsDirectory, CurrentCreatedFolder);
-                    if (Directory.Exists(createdDirectory))
+                    MainPanel.Invoke(new Action(() =>
                     {
-                        Directory.Delete(createdDirectory, true);
-                    }
+                        ToggleUIEnabled(false);
+                        MessageBox.Show(string.Format(Strings.Error_Copying, neighborhood.Name), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }));
+                }
+                finally
+                {
                     DuplicationThread = null;
                     MainPanel.Invoke(new Action(() =>
                     {
@@ -236,8 +223,31 @@ namespace Sims2HoodDuplicator
                         DuplicateButton.Text = Strings.Duplicate;
                         ToggleUIEnabled(true);
                     }));
-                }).Start();
-            }
+                }
+            });
+            DuplicationThread.Start();
+            DuplicateButton.Text = Strings.Cancel;
+            DuplicateButton.Enabled = true;
+        }
+
+        private void CancelDuplication()
+        {
+            DuplicationThread.Abort();
+            new Thread(() =>
+            {
+                string createdDirectory = Path.Combine(UserNeighborhoodsDirectory, CurrentCreatedFolder);
+                if (Directory.Exists(createdDirectory))
+                {
+                    Directory.Delete(createdDirectory, true);
+                }
+                DuplicationThread = null;
+                MainPanel.Invoke(new Action(() =>
+                {
+                    CopyProgressBar.Value = 0;
+                    DuplicateButton.Text = Strings.Duplicate;
+                    ToggleUIEnabled(true);
+                }));
+            }).Start();
         }
 
         private void ToggleUIEnabled(bool enabled)
