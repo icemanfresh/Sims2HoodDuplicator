@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-
+﻿
 namespace Sims2HoodDuplicator
 {
     partial class MainForm
@@ -8,16 +7,6 @@ namespace Sims2HoodDuplicator
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-        private string[] _packs = new string[] { "The Sims 2", "The Sims 2 Seasons", "The Sims 2 FreeTime", "The Sims 2 Apartment Life" };
-        private Dictionary<string, string> _folderNeighborhoodNameMappings = new Dictionary<string, string>
-        {
-            { "N001", Strings.Pleasantview },
-            { "N002", Strings.Strangetown },
-            { "N003", Strings.Veronaville },
-            { "G001", Strings.Riverblossom_Hills },
-            { "F001", Strings.Desiderata_Valley },
-            { "E001", Strings.Belladonna_Cove }
-        };
 
         /// <summary>
         /// Clean up any resources being used.
@@ -43,9 +32,13 @@ namespace Sims2HoodDuplicator
             this.NeighborhoodDropdown = new System.Windows.Forms.ComboBox();
             this.DuplicateButton = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
+            this.RadioGroup = new System.Windows.Forms.Panel();
+            this.ExistingRadioButton = new System.Windows.Forms.RadioButton();
+            this.NewRadioButton = new System.Windows.Forms.RadioButton();
             this.NeighborhoodImageBox = new System.Windows.Forms.PictureBox();
             this.CopyProgressBar = new System.Windows.Forms.ProgressBar();
             this.MainPanel.SuspendLayout();
+            this.RadioGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NeighborhoodImageBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -76,6 +69,7 @@ namespace Sims2HoodDuplicator
             // 
             // MainPanel
             // 
+            this.MainPanel.Controls.Add(this.RadioGroup);
             this.MainPanel.Controls.Add(this.NeighborhoodImageBox);
             this.MainPanel.Controls.Add(this.CopyProgressBar);
             this.MainPanel.Controls.Add(this.NeighborhoodDropdown);
@@ -85,6 +79,40 @@ namespace Sims2HoodDuplicator
             this.MainPanel.Name = "MainPanel";
             this.MainPanel.Size = new System.Drawing.Size(424, 262);
             this.MainPanel.TabIndex = 2;
+            // 
+            // RadioGroup
+            // 
+            this.RadioGroup.Controls.Add(this.ExistingRadioButton);
+            this.RadioGroup.Controls.Add(this.NewRadioButton);
+            this.RadioGroup.Location = new System.Drawing.Point(12, 227);
+            this.RadioGroup.Name = "RadioGroup";
+            this.RadioGroup.Size = new System.Drawing.Size(268, 23);
+            this.RadioGroup.TabIndex = 5;
+            // 
+            // ExistingRadioButton
+            // 
+            this.ExistingRadioButton.AutoSize = true;
+            this.ExistingRadioButton.Location = new System.Drawing.Point(56, 3);
+            this.ExistingRadioButton.Name = "ExistingRadioButton";
+            this.ExistingRadioButton.Size = new System.Drawing.Size(61, 17);
+            this.ExistingRadioButton.TabIndex = 5;
+            this.ExistingRadioButton.TabStop = true;
+            this.ExistingRadioButton.Text = "Existing";
+            this.ExistingRadioButton.UseVisualStyleBackColor = true;
+            this.ExistingRadioButton.CheckedChanged += new System.EventHandler(this.NewExistingRadioGroup_CheckedChanged);
+            // 
+            // NewRadioButton
+            // 
+            this.NewRadioButton.AutoSize = true;
+            this.NewRadioButton.Checked = true;
+            this.NewRadioButton.Location = new System.Drawing.Point(3, 3);
+            this.NewRadioButton.Name = "NewRadioButton";
+            this.NewRadioButton.Size = new System.Drawing.Size(47, 17);
+            this.NewRadioButton.TabIndex = 4;
+            this.NewRadioButton.TabStop = true;
+            this.NewRadioButton.Text = "New";
+            this.NewRadioButton.UseVisualStyleBackColor = true;
+            this.NewRadioButton.CheckedChanged += new System.EventHandler(this.NewExistingRadioGroup_CheckedChanged);
             // 
             // NeighborhoodImageBox
             // 
@@ -117,12 +145,18 @@ namespace Sims2HoodDuplicator
             this.Text = "The Sims 2 Hood Duplicator";
             this.MainPanel.ResumeLayout(false);
             this.MainPanel.PerformLayout();
+            this.RadioGroup.ResumeLayout(false);
+            this.RadioGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NeighborhoodImageBox)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.Panel RadioGroup;
+        private System.Windows.Forms.RadioButton NewRadioButton;
+        private System.Windows.Forms.RadioButton ExistingRadioButton;
     }
 }
 

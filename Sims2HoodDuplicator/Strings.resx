@@ -135,6 +135,15 @@
   <data name="Error Copying" xml:space="preserve">
     <value>There was a problem copying {0} to your game files.</value>
   </data>
+  <data name="Existing" xml:space="preserve">
+    <value>Existing</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="No Longer Exists" xml:space="preserve">
+    <value>The neighborhood you selected no longer exists. The list of available neighborhoods will be refreshed.</value>
+  </data>
   <data name="Not Installed" xml:space="preserve">
     <value>No The Sims 2 installation was detected. Please install The Sims 2 before running this application.</value>
   </data>

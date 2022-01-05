@@ -115,6 +115,33 @@ namespace Sims2HoodDuplicator {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Existing.
+        /// </summary>
+        public static string Existing {
+            get {
+                return ResourceManager.GetString("Existing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New.
+        /// </summary>
+        public static string New {
+            get {
+                return ResourceManager.GetString("New", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The neighborhood you selected no longer exists. The list of available neighborhoods will be refreshed..
+        /// </summary>
+        public static string No_Longer_Exists {
+            get {
+                return ResourceManager.GetString("No Longer Exists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No The Sims 2 installation was detected. Please install The Sims 2 before running this application..
         /// </summary>
         public static string Not_Installed {

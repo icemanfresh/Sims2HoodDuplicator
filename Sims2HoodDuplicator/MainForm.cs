@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace Sims2HoodDuplicator
 {
@@ -16,37 +17,78 @@ namespace Sims2HoodDuplicator
             }
             InitializeComponent();
             LocalizeUI();
-            PopulateNeighborhoodDropdown();
+            PopulateNewNeighborhoodDropdown();
+            GetExistingNeighborhoods();
         }
 
         private void LocalizeUI()
         {
             Text = Strings.Program_Name;
+            NewRadioButton.Text = Strings.New;
+            ExistingRadioButton.Text = Strings.Existing;
+            ExistingRadioButton.Location = new System.Drawing.Point(NewRadioButton.Right, ExistingRadioButton.Top);
             DuplicateButton.Text = Strings.Duplicate;
         }
 
-        private void PopulateNeighborhoodDropdown()
+        private void PopulateNewNeighborhoodDropdown()
         {
-            NeighborhoodDropdown.DisplayMember = "Name";
-            NeighborhoodDropdown.ValueMember = "Directory";
-            foreach (string pack in _packs)
+            if (NewNeighborhoods == null)
             {
-                string neighborhoodTemplatesDirectory = Functions.GetNeighborhoodTemplatesDirectory(pack);
-                if (neighborhoodTemplatesDirectory != null)
+                NewNeighborhoods = new List<Neighborhood>();
+                NeighborhoodDropdown.DisplayMember = "Name";
+                NeighborhoodDropdown.ValueMember = "Directory";
+                foreach (string pack in Packs)
                 {
-                    string[] dirs = Directory.GetDirectories(neighborhoodTemplatesDirectory);
-                    foreach (string dir in dirs)
+                    string neighborhoodTemplatesDirectory = Functions.GetNeighborhoodTemplatesDirectory(pack);
+                    if (neighborhoodTemplatesDirectory != null)
                     {
-                        string folderName = Path.GetFileName(dir);
-                        if (_folderNeighborhoodNameMappings.ContainsKey(folderName))
+                        string[] dirs = Directory.GetDirectories(neighborhoodTemplatesDirectory);
+                        foreach (string dir in dirs)
                         {
-                            NeighborhoodDropdown.Items.Add(new Neighborhood(_folderNeighborhoodNameMappings[folderName], dir));
+                            string folderName = Path.GetFileName(dir);
+                            if (FolderNeighborhoodNameMappings.ContainsKey(folderName))
+                            {
+                                NewNeighborhoods.Add(new Neighborhood(FolderNeighborhoodNameMappings[folderName], dir));
+                            }
                         }
                     }
                 }
             }
+            NeighborhoodDropdown.Items.Clear();
+            NeighborhoodDropdown.Items.AddRange(NewNeighborhoods.ToArray());
             NeighborhoodDropdown.SelectedIndex = 0;
             Neighborhood selected = (Neighborhood) NeighborhoodDropdown.SelectedItem;
+            DisplayNeighborhoodImage(selected.Directory);
+        }
+
+        private void GetExistingNeighborhoods()
+        {
+            ExistingNeighborhoods = new List<Neighborhood>();
+            if (!Directory.Exists(UserNeighborhoodsDirectory))
+            {
+                Directory.CreateDirectory(UserNeighborhoodsDirectory);
+            }
+            string[] hoods = Directory.GetDirectories(UserNeighborhoodsDirectory);
+            foreach (string hood in hoods)
+            {
+                string folderName = Path.GetFileName(hood);
+                if (!folderName.Equals("Tutorial"))
+                {
+                    ExistingNeighborhoods.Add(new Neighborhood(folderName, hood));
+                }
+            }
+            if (ExistingNeighborhoods.Count == 0)
+            {
+                ExistingRadioButton.Enabled = false;
+            }
+        }
+
+        private void PopulateExistingNeighborhoodDropdown()
+        {
+            NeighborhoodDropdown.Items.Clear();
+            NeighborhoodDropdown.Items.AddRange(ExistingNeighborhoods.ToArray());
+            NeighborhoodDropdown.SelectedIndex = 0;
+            Neighborhood selected = (Neighborhood)NeighborhoodDropdown.SelectedItem;
             DisplayNeighborhoodImage(selected.Directory);
         }
 
@@ -70,6 +112,17 @@ namespace Sims2HoodDuplicator
         private System.Windows.Forms.ProgressBar CopyProgressBar;
         private System.Windows.Forms.PictureBox NeighborhoodImageBox;
 
+        private readonly string[] Packs = new string[] { "The Sims 2", "The Sims 2 Seasons", "The Sims 2 FreeTime", "The Sims 2 Apartment Life" };
+        private readonly Dictionary<string, string> FolderNeighborhoodNameMappings = new Dictionary<string, string>
+        {
+            { "N001", Strings.Pleasantview },
+            { "N002", Strings.Strangetown },
+            { "N003", Strings.Veronaville },
+            { "G001", Strings.Riverblossom_Hills },
+            { "F001", Strings.Desiderata_Valley },
+            { "E001", Strings.Belladonna_Cove }
+        };
+        private List<Neighborhood> NewNeighborhoods, ExistingNeighborhoods;
         private Thread DuplicationThread;
         private readonly string UserNeighborhoodsDirectory = Functions.GetUserNeighborhoodsDirectory();
         private string CurrentCreatedFolder;
@@ -104,11 +157,16 @@ namespace Sims2HoodDuplicator
 
         private void DuplicateButton_Click(object sender, EventArgs e)
         {
-            DuplicateButton.Enabled = false;
+            ToggleUIEnabled(false);
             if (DuplicationThread == null)
             {
                 CurrentCreatedFolder = Functions.GetNextUnusedNeighborhoodFolder();
                 var neighborhood = ((Neighborhood)NeighborhoodDropdown.SelectedItem);
+                if (!Directory.Exists(neighborhood.Directory))
+                {
+                    RefreshDropDown();
+                    return;
+                }
                 DuplicationThread = new Thread(() =>
                 {
                     try
@@ -118,7 +176,7 @@ namespace Sims2HoodDuplicator
                         {
                             MainPanel.Invoke(new Action(() =>
                             {
-                                DuplicateButton.Enabled = false;
+                                ToggleUIEnabled(false);
                                 MessageBox.Show(string.Format(Strings.Error_Copying, neighborhood.Name), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }));
                         }
@@ -126,7 +184,13 @@ namespace Sims2HoodDuplicator
                         {
                             MainPanel.Invoke(new Action(() =>
                             {
-                                DuplicateButton.Enabled = false;
+                                ToggleUIEnabled(false);
+                                if (ExistingRadioButton.Checked)
+                                {
+                                    Neighborhood newNeighborhood = new Neighborhood(newNeighborhoodName, Path.Combine(UserNeighborhoodsDirectory, newNeighborhoodName));
+                                    ExistingNeighborhoods.Add(newNeighborhood);
+                                    NeighborhoodDropdown.Items.Add(newNeighborhood);
+                                }
                                 MessageBox.Show(string.Format(Strings.Success, newNeighborhoodName));
                             }));
                         }
@@ -136,7 +200,7 @@ namespace Sims2HoodDuplicator
                     {
                         MainPanel.Invoke(new Action(() =>
                         {
-                            DuplicateButton.Enabled = false;
+                            ToggleUIEnabled(false);
                             MessageBox.Show(string.Format(Strings.Error_Copying, neighborhood.Name), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }));
                     }
@@ -147,7 +211,7 @@ namespace Sims2HoodDuplicator
                         {
                             CopyProgressBar.Value = 0;
                             DuplicateButton.Text = Strings.Duplicate;
-                            DuplicateButton.Enabled = true;
+                            ToggleUIEnabled(true);
                         }));
                     }
                 });
@@ -170,16 +234,63 @@ namespace Sims2HoodDuplicator
                     {
                         CopyProgressBar.Value = 0;
                         DuplicateButton.Text = Strings.Duplicate;
-                        DuplicateButton.Enabled = true;
+                        ToggleUIEnabled(true);
                     }));
                 }).Start();
             }
         }
 
+        private void ToggleUIEnabled(bool enabled)
+        {
+            NeighborhoodDropdown.Enabled = enabled;
+            DuplicateButton.Enabled = enabled;
+            NewRadioButton.Enabled = enabled;
+            ExistingRadioButton.Enabled = enabled;
+        }
+
+        private void NewExistingRadioGroup_CheckedChanged(object sender, EventArgs e)
+        {
+            if (NewRadioButton.Checked)
+            {
+                PopulateNewNeighborhoodDropdown();
+            }
+            else
+            {
+                PopulateExistingNeighborhoodDropdown();
+            }
+        }
+
+        private void RefreshDropDown()
+        {
+            ToggleUIEnabled(false);
+            MessageBox.Show(Strings.No_Longer_Exists);
+            if (NewRadioButton.Checked)
+            {
+                NewNeighborhoods = null;
+                PopulateNewNeighborhoodDropdown();
+            }
+            else if (ExistingRadioButton.Checked)
+            {
+                ExistingNeighborhoods.Clear();
+                GetExistingNeighborhoods();
+                PopulateExistingNeighborhoodDropdown();
+            }
+            Neighborhood selected = (Neighborhood)NeighborhoodDropdown.SelectedItem;
+            DisplayNeighborhoodImage(selected.Directory);
+            ToggleUIEnabled(true);
+        }
+
         private void NeighborhoodDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
             Neighborhood selected = (Neighborhood)NeighborhoodDropdown.SelectedItem;
-            DisplayNeighborhoodImage(selected.Directory);
+            if (!Directory.Exists(selected.Directory))
+            {
+                RefreshDropDown();
+            }
+            else
+            {
+                DisplayNeighborhoodImage(selected.Directory);
+            }
         }
     }
 }
