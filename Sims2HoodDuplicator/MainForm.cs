@@ -129,8 +129,8 @@ namespace Sims2HoodDuplicator
 
         public class Neighborhood
         {
-            private string myName;
-            private string myDirectory;
+            private readonly string myName;
+            private readonly string myDirectory;
 
             public Neighborhood(string strName, string strDirectory)
             {
