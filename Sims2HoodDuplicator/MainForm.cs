@@ -157,11 +157,15 @@ namespace Sims2HoodDuplicator
 
         private void DuplicateButton_Click(object sender, EventArgs e)
         {
+            Duplicate(((Neighborhood)NeighborhoodDropdown.SelectedItem));
+        }
+
+        private void Duplicate(Neighborhood neighborhood)
+        {
             ToggleUIEnabled(false);
             if (DuplicationThread == null)
             {
                 CurrentCreatedFolder = Functions.GetNextUnusedNeighborhoodFolder();
-                var neighborhood = ((Neighborhood)NeighborhoodDropdown.SelectedItem);
                 if (!Directory.Exists(neighborhood.Directory))
                 {
                     RefreshDropDown();
