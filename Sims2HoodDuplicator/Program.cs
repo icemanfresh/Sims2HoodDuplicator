@@ -12,18 +12,9 @@ namespace Sims2HoodDuplicator
         [STAThread]
         static void Main()
         {
-            var neighborhoodsDirectory = Functions.GetNeighborhoodsDirectory();
-            if (neighborhoodsDirectory == null)
-            {
-                MessageBox.Show(Strings.Not_Installed);
-                return;
-            }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm
-            {
-                NeighborhoodsDirectory = neighborhoodsDirectory
-            });
+            Application.Run(new MainForm());
         }
     }
 }

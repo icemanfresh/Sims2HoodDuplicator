@@ -7,12 +7,15 @@ namespace Sims2HoodDuplicator
     {
         public MainForm()
         {
+            if (Functions.GetNeighborhoodsDirectory() == null)
+            {
+                MessageBox.Show(Strings.Not_Installed);
+                return;
+            }
             InitializeComponent();
             LocalizeUI();
             PopulateNeighborhoodDropdown();
         }
-
-        public string NeighborhoodsDirectory { get; internal set; }
 
         private void DuplicateButton_Click(object sender, EventArgs e)
         {
