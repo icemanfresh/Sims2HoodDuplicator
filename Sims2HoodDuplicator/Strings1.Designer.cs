@@ -61,11 +61,110 @@ namespace Sims2HoodDuplicator {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Belladonna Cove.
+        /// </summary>
+        public static string Belladonna_Cove {
+            get {
+                return ResourceManager.GetString("Belladonna Cove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Desiderata Valley.
+        /// </summary>
+        public static string Desiderata_Valley {
+            get {
+                return ResourceManager.GetString("Desiderata Valley", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate.
+        /// </summary>
+        public static string Duplicate {
+            get {
+                return ResourceManager.GetString("Duplicate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was a problem copying {0} to your game files..
+        /// </summary>
+        public static string Error_Copying {
+            get {
+                return ResourceManager.GetString("Error Copying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No The Sims 2 installation was detected. Please install The Sims 2 before running this application..
+        /// </summary>
+        public static string Not_Installed {
+            get {
+                return ResourceManager.GetString("Not Installed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pleasantview.
+        /// </summary>
+        public static string Pleasantview {
+            get {
+                return ResourceManager.GetString("Pleasantview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Sims 2 Hood Duplicator.
         /// </summary>
         public static string Program_Name {
             get {
                 return ResourceManager.GetString("Program Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Riverblossom Hills.
+        /// </summary>
+        public static string Riverblossom_Hills {
+            get {
+                return ResourceManager.GetString("Riverblossom Hills", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strangetown.
+        /// </summary>
+        public static string Strangetown {
+            get {
+                return ResourceManager.GetString("Strangetown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The neighborbood was successfully duplicated as {0}..
+        /// </summary>
+        public static string Success {
+            get {
+                return ResourceManager.GetString("Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Veronaville.
+        /// </summary>
+        public static string Veronaville {
+            get {
+                return ResourceManager.GetString("Veronaville", resourceCulture);
             }
         }
     }

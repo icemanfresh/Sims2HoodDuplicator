@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Sims2HoodDuplicator
@@ -14,11 +12,17 @@ namespace Sims2HoodDuplicator
         [STAThread]
         static void Main()
         {
+            var neighborhoodsDirectory = Functions.GetNeighborhoodsDirectory();
+            if (neighborhoodsDirectory == null)
+            {
+                MessageBox.Show(Strings.Not_Installed);
+                return;
+            }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm
             {
-                Text = Strings.Program_Name
+                NeighborhoodsDirectory = neighborhoodsDirectory
             });
         }
     }

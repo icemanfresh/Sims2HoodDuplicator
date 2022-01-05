@@ -117,7 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Belladonna Cove" xml:space="preserve">
+    <value>Belladonna Cove</value>
+  </data>
+  <data name="Desiderata Valley" xml:space="preserve">
+    <value>Desiderata Valley</value>
+  </data>
+  <data name="Duplicate" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Error Copying" xml:space="preserve">
+    <value>There was a problem copying {0} to your game files.</value>
+  </data>
+  <data name="Not Installed" xml:space="preserve">
+    <value>No The Sims 2 installation was detected. Please install The Sims 2 before running this application.</value>
+  </data>
+  <data name="Pleasantview" xml:space="preserve">
+    <value>Pleasantview</value>
+  </data>
   <data name="Program Name" xml:space="preserve">
     <value>The Sims 2 Hood Duplicator</value>
+  </data>
+  <data name="Riverblossom Hills" xml:space="preserve">
+    <value>Riverblossom Hills</value>
+  </data>
+  <data name="Strangetown" xml:space="preserve">
+    <value>Strangetown</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>The neighborbood was successfully duplicated as {0}.</value>
+  </data>
+  <data name="Veronaville" xml:space="preserve">
+    <value>Veronaville</value>
   </data>
 </root>
