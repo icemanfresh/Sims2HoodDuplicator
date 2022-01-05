@@ -10,7 +10,7 @@ namespace Sims2HoodDuplicator
     {
         internal static string GetUserNeighborhoodsDirectory()
         {
-            string keyName = String.Format(@"Software{0}\EA Games\The Sims 2", Environment.Is64BitProcess ? @"\WOW6432Node" : "");
+            string keyName = string.Format(@"Software{0}\EA Games\The Sims 2", Environment.Is64BitProcess ? @"\WOW6432Node" : "");
             string valueName = "DisplayName";
             var sims2Subkey = Registry.LocalMachine.OpenSubKey(keyName, false);
             if (sims2Subkey == null)
@@ -26,7 +26,7 @@ namespace Sims2HoodDuplicator
 
         internal static string GetNeighborhoodTemplatesDirectory(string pack)
         {
-            string keyName = String.Format(@"Software{0}\EA Games\{1}", Environment.Is64BitProcess ? @"\WOW6432Node" : "", pack);
+            string keyName = string.Format(@"Software{0}\EA Games\{1}", Environment.Is64BitProcess ? @"\WOW6432Node" : "", pack);
             string valueName = "Install Dir";
             var packSubkey = Registry.LocalMachine.OpenSubKey(keyName, false);
             if (packSubkey == null)
