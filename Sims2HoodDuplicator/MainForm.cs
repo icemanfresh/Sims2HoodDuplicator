@@ -199,10 +199,10 @@ namespace Sims2HoodDuplicator
                         MainPanel.Invoke(new Action(() =>
                         {
                             ToggleUIEnabled(false);
+                            Neighborhood newNeighborhood = new Neighborhood(newNeighborhoodName, Path.Combine(UserNeighborhoodsDirectory, newNeighborhoodName));
+                            ExistingNeighborhoods.Add(newNeighborhood);
                             if (ExistingRadioButton.Checked)
                             {
-                                Neighborhood newNeighborhood = new Neighborhood(newNeighborhoodName, Path.Combine(UserNeighborhoodsDirectory, newNeighborhoodName));
-                                ExistingNeighborhoods.Add(newNeighborhood);
                                 NeighborhoodDropdown.Items.Add(newNeighborhood);
                             }
                             MessageBox.Show(string.Format(Strings.Success, newNeighborhoodName));
@@ -259,7 +259,7 @@ namespace Sims2HoodDuplicator
             NeighborhoodDropdown.Enabled = enabled;
             DuplicateButton.Enabled = enabled;
             NewRadioButton.Enabled = enabled;
-            ExistingRadioButton.Enabled = enabled;
+            ExistingRadioButton.Enabled = enabled && ExistingNeighborhoods.Count > 0;
         }
 
         private void NewExistingRadioGroup_CheckedChanged(object sender, EventArgs e)
@@ -287,7 +287,15 @@ namespace Sims2HoodDuplicator
             {
                 ExistingNeighborhoods.Clear();
                 GetExistingNeighborhoods();
-                PopulateExistingNeighborhoodDropdown();
+                if (ExistingNeighborhoods.Count == 0)
+                {
+                    NewRadioButton.Checked = true;
+                    ExistingRadioButton.Checked = false;
+                }
+                else
+                {
+                    PopulateExistingNeighborhoodDropdown();
+                }
             }
             Neighborhood selected = (Neighborhood)NeighborhoodDropdown.SelectedItem;
             DisplayNeighborhoodImage(selected.Directory);
