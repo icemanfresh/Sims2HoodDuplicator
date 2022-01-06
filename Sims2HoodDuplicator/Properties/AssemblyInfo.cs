@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Sims2HoodDuplicator")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("The Sims 2 Hood Duplicator")]
+[assembly: AssemblyDescription("Utility that allows players to duplicate their The Sims 2 neighborhoods")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Sims2HoodDuplicator")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2022")]
+[assembly: AssemblyCompany("icmnfrsh")]
+[assembly: AssemblyProduct("The Sims 2 Hood Duplicator")]
+[assembly: AssemblyCopyright("Copyright © icmnfrsh 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -8,13 +8,16 @@ namespace Sims2HoodDuplicator
 {
     public partial class MainForm : Form
     {
-        public MainForm()
+        public MainForm(Mutex mutex)
         {
             if (Duplication.GetUserNeighborhoodsDirectory() == null)
             {
                 MessageBox.Show(Strings.Not_Installed);
+                mutex.Close();
                 return;
             }
+            this.mutex = mutex;
+            Application.ApplicationExit += OnExit;
             InitializeComponent();
             LocalizeUI();
             PopulateNewNeighborhoodDropdown();
@@ -126,6 +129,7 @@ namespace Sims2HoodDuplicator
         private Thread DuplicationThread;
         private readonly string UserNeighborhoodsDirectory = Duplication.GetUserNeighborhoodsDirectory();
         private string CurrentCreatedFolder;
+        private readonly Mutex mutex;
 
         public class Neighborhood
         {
@@ -313,6 +317,11 @@ namespace Sims2HoodDuplicator
             {
                 DisplayNeighborhoodImage(selected.Directory);
             }
+        }
+
+        internal void OnExit(object sender, EventArgs e)
+        {
+            mutex.Close();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Sims2HoodDuplicator
@@ -31,9 +32,16 @@ namespace Sims2HoodDuplicator
                     Update.DeleteUpdateFile(args[1]);
                 }
             }
+
+            Mutex mutex = new Mutex(true, "The Sims 2 Hood Duplicator", out bool uniqueInstance);
+            if (!uniqueInstance)
+            {
+                return;
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            if(Update.HasUpdate() && (args.Length < 2 || !args[0].Equals("-u")))
+            if (Update.HasUpdate() && (args.Length < 2 || !args[0].Equals("-u")))
             {
                 DialogResult result = MessageBox.Show(Strings.Update_Available, "", MessageBoxButtons.YesNo);
                 if(result == DialogResult.Yes)
@@ -60,7 +68,7 @@ namespace Sims2HoodDuplicator
                     }
                 }
             }
-            Application.Run(new MainForm());
+            Application.Run(new MainForm(mutex));
         }
     }
 }
