@@ -49,7 +49,7 @@ namespace Sims2HoodDuplicator
             client.DownloadFile(url, tempFile);
             Process process = new Process();
             process.StartInfo.FileName = tempFile;
-            process.StartInfo.Arguments = "-u " + Assembly.GetExecutingAssembly().Location;
+            process.StartInfo.Arguments = "-u " + "\"" + Assembly.GetExecutingAssembly().Location + "\"";
             process.Start();
         }
 
@@ -59,7 +59,7 @@ namespace Sims2HoodDuplicator
             File.Copy(updateFileLocation, location, true);
             Process process = new Process();
             process.StartInfo.FileName = location;
-            process.StartInfo.Arguments = "-d " + updateFileLocation;
+            process.StartInfo.Arguments = "-d " + "\"" + updateFileLocation + "\"";
             process.Start();
         }
 
