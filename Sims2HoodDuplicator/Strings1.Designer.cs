@@ -196,6 +196,33 @@ namespace Sims2HoodDuplicator {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is a new version available. Would you like to update?.
+        /// </summary>
+        public static string Update_Available {
+            get {
+                return ResourceManager.GetString("Update Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Sims 2 Hood Duplicator couldn&apos;t be updated. Please try again later..
+        /// </summary>
+        public static string Update_Failed {
+            get {
+                return ResourceManager.GetString("Update Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was a problem downloading the new version. Would you like to retry?.
+        /// </summary>
+        public static string Update_Problem {
+            get {
+                return ResourceManager.GetString("Update Problem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Veronaville.
         /// </summary>
         public static string Veronaville {

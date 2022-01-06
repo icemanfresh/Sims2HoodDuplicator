@@ -162,6 +162,15 @@
   <data name="Success" xml:space="preserve">
     <value>The neighborbood was successfully duplicated as {0}.</value>
   </data>
+  <data name="Update Available" xml:space="preserve">
+    <value>There is a new version available. Would you like to update?</value>
+  </data>
+  <data name="Update Failed" xml:space="preserve">
+    <value>The Sims 2 Hood Duplicator couldn't be updated. Please try again later.</value>
+  </data>
+  <data name="Update Problem" xml:space="preserve">
+    <value>There was a problem downloading the new version. Would you like to retry?</value>
+  </data>
   <data name="Veronaville" xml:space="preserve">
     <value>Veronaville</value>
   </data>

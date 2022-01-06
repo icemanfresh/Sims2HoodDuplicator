@@ -10,7 +10,7 @@ namespace Sims2HoodDuplicator
     {
         public MainForm()
         {
-            if (Functions.GetUserNeighborhoodsDirectory() == null)
+            if (Duplication.GetUserNeighborhoodsDirectory() == null)
             {
                 MessageBox.Show(Strings.Not_Installed);
                 return;
@@ -39,7 +39,7 @@ namespace Sims2HoodDuplicator
                 NeighborhoodDropdown.ValueMember = "Directory";
                 foreach (string pack in Packs)
                 {
-                    string neighborhoodTemplatesDirectory = Functions.GetNeighborhoodTemplatesDirectory(pack);
+                    string neighborhoodTemplatesDirectory = Duplication.GetNeighborhoodTemplatesDirectory(pack);
                     if (neighborhoodTemplatesDirectory != null)
                     {
                         string[] dirs = Directory.GetDirectories(neighborhoodTemplatesDirectory);
@@ -124,7 +124,7 @@ namespace Sims2HoodDuplicator
         };
         private List<Neighborhood> NewNeighborhoods, ExistingNeighborhoods;
         private Thread DuplicationThread;
-        private readonly string UserNeighborhoodsDirectory = Functions.GetUserNeighborhoodsDirectory();
+        private readonly string UserNeighborhoodsDirectory = Duplication.GetUserNeighborhoodsDirectory();
         private string CurrentCreatedFolder;
 
         public class Neighborhood
@@ -165,7 +165,7 @@ namespace Sims2HoodDuplicator
             ToggleUIEnabled(false);
             if (DuplicationThread == null)
             {
-                CurrentCreatedFolder = Functions.GetNextUnusedNeighborhoodFolder();
+                CurrentCreatedFolder = Duplication.GetNextUnusedNeighborhoodFolder();
                 if (!Directory.Exists(neighborhood.Directory))
                 {
                     RefreshDropDown();
@@ -185,7 +185,7 @@ namespace Sims2HoodDuplicator
             {
                 try
                 {
-                    string newNeighborhoodName = Functions.DuplicateNeighborhoodTemplate(neighborhood.Directory, CopyProgressBar);
+                    string newNeighborhoodName = Duplication.DuplicateNeighborhoodTemplate(neighborhood.Directory, CopyProgressBar);
                     if (newNeighborhoodName == null)
                     {
                         MainPanel.Invoke(new Action(() =>
@@ -209,8 +209,8 @@ namespace Sims2HoodDuplicator
                         }));
                     }
                 }
-                catch (ThreadAbortException ex) { }
-                catch (Exception ex)
+                catch (ThreadAbortException) { }
+                catch (Exception)
                 {
                     MainPanel.Invoke(new Action(() =>
                     {

@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Sims2HoodDuplicator
 {
-    internal class Functions
+    internal class Duplication
     {
         internal static string GetUserNeighborhoodsDirectory()
         {
