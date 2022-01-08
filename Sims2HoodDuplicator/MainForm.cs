@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Sims2HoodDuplicator
 {
@@ -51,7 +52,29 @@ namespace Sims2HoodDuplicator
                             string folderName = Path.GetFileName(dir);
                             if (FolderNeighborhoodNameMappings.ContainsKey(folderName))
                             {
-                                NewNeighborhoods.Add(new Neighborhood(FolderNeighborhoodNameMappings[folderName], dir));
+                                if (NeighborhoodStorytellingIDMappings.ContainsKey(folderName))
+                                {
+                                    List<string> screenshotFiles = new List<string>();
+                                    List<string> storytellingIDs = NeighborhoodStorytellingIDMappings[folderName];
+                                    string[] files = Directory.GetFiles(Duplication.GetNeighborhoodTemplatesDirectory(pack, true));
+                                    foreach (string file in files)
+                                    {
+                                        string fileName = new FileInfo(file).Name;
+                                        foreach (string id in storytellingIDs)
+                                        {
+                                            Regex regex = new Regex(@"^(snapshot_" + id + @"|thumbnail_" + id + "|webentry_" + id + ")");
+                                            if (regex.IsMatch(fileName))
+                                            {
+                                                screenshotFiles.Add(file);
+                                            }
+                                        }
+                                    }
+                                    NewNeighborhoods.Add(new Neighborhood(FolderNeighborhoodNameMappings[folderName], dir, screenshotFiles));
+                                }
+                                else
+                                {
+                                    NewNeighborhoods.Add(new Neighborhood(FolderNeighborhoodNameMappings[folderName], dir));
+                                }
                             }
                         }
                     }
@@ -125,6 +148,12 @@ namespace Sims2HoodDuplicator
             { "F001", Strings.Desiderata_Valley },
             { "E001", Strings.Belladonna_Cove }
         };
+        private readonly Dictionary<string, List<string>> NeighborhoodStorytellingIDMappings = new Dictionary<string, List<string>>
+        {
+            { "N001", new List<string>() { "00000001", "2dae7a30", "2dae895f", "6dae6a73", "adae8020", "cdae71fd", "edae8d77" } },
+            { "N002", new List<string>() { "00000002", "0d917b96", "2d7b3372", "6d7b3369", "cd338e66", "ed7b3373" } },
+            { "N003", new List<string>() { "00000003", "2da007fb", "cda007ff", "eda007fa" } }
+        };
         private List<Neighborhood> NewNeighborhoods, ExistingNeighborhoods;
         private Thread DuplicationThread;
         private readonly string UserNeighborhoodsDirectory = Duplication.GetUserNeighborhoodsDirectory();
@@ -135,11 +164,13 @@ namespace Sims2HoodDuplicator
         {
             private readonly string myName;
             private readonly string myDirectory;
+            private readonly List<string> myScreenshotList;
 
-            public Neighborhood(string strName, string strDirectory)
+            public Neighborhood(string strName, string strDirectory, List<string> screenshotList = null)
             {
                 this.myName = strName;
                 this.myDirectory = strDirectory;
+                this.myScreenshotList = screenshotList;
             }
 
             public string Name
@@ -155,6 +186,14 @@ namespace Sims2HoodDuplicator
                 get
                 {
                     return myDirectory;
+                }
+            }
+
+            public List<string> ScreenshotList
+            {
+                get
+                {
+                    return myScreenshotList;
                 }
             }
         }
@@ -189,7 +228,7 @@ namespace Sims2HoodDuplicator
             {
                 try
                 {
-                    string newNeighborhoodName = Duplication.DuplicateNeighborhoodTemplate(neighborhood.Directory, CopyProgressBar);
+                    string newNeighborhoodName = Duplication.DuplicateNeighborhoodTemplate(neighborhood.Directory, CopyProgressBar, neighborhood.ScreenshotList);
                     if (newNeighborhoodName == null)
                     {
                         MainPanel.Invoke(new Action(() =>

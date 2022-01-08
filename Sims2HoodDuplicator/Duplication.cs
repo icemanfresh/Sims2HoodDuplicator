@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Sims2HoodDuplicator
 {
@@ -24,7 +25,7 @@ namespace Sims2HoodDuplicator
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EA Games", displayName, "Neighborhoods");
         }
 
-        internal static string GetNeighborhoodTemplatesDirectory(string pack)
+        internal static string GetNeighborhoodTemplatesDirectory(string pack, bool getStorytellingTemplates = false)
         {
             string keyName = string.Format(@"Software{0}\EA Games\{1}", Environment.Is64BitProcess ? @"\WOW6432Node" : "", pack);
             string valueName = "Install Dir";
@@ -37,10 +38,10 @@ namespace Sims2HoodDuplicator
 
             string installationDir = packSubkey.GetValue(valueName).ToString();
             packSubkey.Close();
-            return Path.Combine(installationDir, "TSData", "Res", "UserData", "Neighborhoods");
+            return Path.Combine(installationDir, "TSData", "Res", "UserData", getStorytellingTemplates ? "Storytelling" : "Neighborhoods");
         }
 
-        internal static string DuplicateNeighborhoodTemplate(string sourceDir, ProgressBar progressBar = null)
+        internal static string DuplicateNeighborhoodTemplate(string sourceDir, ProgressBar progressBar = null, List<string> sourceStorytellingFiles = null)
         {
             string newFolderName = GetNextUnusedNeighborhoodFolder();
             if (newFolderName == null)
@@ -59,6 +60,16 @@ namespace Sims2HoodDuplicator
             string destFolderName = Path.GetFileName(newDirectory);
             CopiedBytes = 0;
             TotalBytes = DirSize(new DirectoryInfo(sourceDir));
+            if (sourceStorytellingFiles != null)
+            {
+                foreach (string image in sourceStorytellingFiles)
+                {
+                    if (File.Exists(image))
+                    {
+                        TotalBytes += new FileInfo(image).Length;
+                    }
+                }
+            }
             if (TotalBytes == 0)
             {
                 TotalBytes = 1;
@@ -68,6 +79,10 @@ namespace Sims2HoodDuplicator
                 }
             }
             DirectoryCopy(sourceDir, newDirectory, sourceFolderName, destFolderName, progressBar);
+            if (sourceStorytellingFiles != null)
+            {
+                StorytellingCopy(sourceStorytellingFiles, Path.Combine(newDirectory, "Storytelling"), progressBar);
+            }
 
             return newFolderName;
         }
@@ -96,6 +111,28 @@ namespace Sims2HoodDuplicator
             {
                 string tempPath = Path.Combine(destDirName, subdir.Name);
                 DirectoryCopy(subdir.FullName, tempPath, sourceFolderName, destFolderName, progressBar);
+            }
+        }
+
+        private static void StorytellingCopy(List<string> sourceStorytellingFiles, string destDirectory, ProgressBar progressBar = null)
+        {
+            if (!Directory.Exists(destDirectory))
+            {
+                Directory.CreateDirectory(destDirectory);
+            }
+
+            foreach (string image in sourceStorytellingFiles)
+            {
+                if (File.Exists(image))
+                {
+                    FileInfo file = new FileInfo(image);
+                    File.Copy(image, Path.Combine(destDirectory, file.Name), true);
+                    if (progressBar != null)
+                    {
+                        CopiedBytes += file.Length;
+                        progressBar?.Invoke(new Action(() => progressBar.Value = (int)(((double)CopiedBytes / TotalBytes) * 100)));
+                    }
+                }
             }
         }
 
