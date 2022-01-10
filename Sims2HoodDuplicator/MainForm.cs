@@ -11,6 +11,7 @@ namespace Sims2HoodDuplicator
     {
         public MainForm(Mutex mutex)
         {
+            Icon = Properties.Resources.Icon;
             if (Duplication.GetUserNeighborhoodsDirectory() == null)
             {
                 MessageBox.Show(Strings.Not_Installed);
