@@ -13,6 +13,8 @@ namespace Sims2HoodDuplicator
         [STAThread]
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHandler);
+
             if (args.Length >= 2)
             {
                 if (args[0].Equals("-u"))
@@ -69,6 +71,12 @@ namespace Sims2HoodDuplicator
                 }
             }
             Application.Run(new MainForm(mutex));
+        }
+
+        private static void ExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            Exception ex = (Exception)args.ExceptionObject;
+            MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }
