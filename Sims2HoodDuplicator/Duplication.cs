@@ -106,8 +106,11 @@ namespace Sims2HoodDuplicator
                 {
                     fileName = fileName.Replace(sourceFolderName, destFolderName);
                 }
-                string tempPath = Path.Combine(destDirName, fileName);
-                file.CopyTo(tempPath, false);
+                string destFile = Path.Combine(destDirName, fileName);
+                if (!destFile.EndsWith(".bkp"))
+                {
+                    file.CopyTo(destFile, false);
+                }
                 CopiedBytes += file.Length;
                 progressBar?.Invoke(new Action(() => progressBar.Value = (int) (((double) CopiedBytes / TotalBytes) * 100)));
             }
