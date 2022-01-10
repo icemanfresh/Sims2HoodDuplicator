@@ -14,13 +14,13 @@ namespace Sims2HoodDuplicator
         internal static string GetUserNeighborhoodsDirectory()
         {
             string keyName = string.Format(@"Software{0}\EA Games\The Sims 2", Environment.Is64BitProcess ? @"\WOW6432Node" : "");
-            string valueName = "DisplayName";
             var sims2Subkey = Registry.LocalMachine.OpenSubKey(keyName, false);
             if (sims2Subkey == null)
             {
                 return null;
             }
 
+            string valueName = "DisplayName";
             string displayName = sims2Subkey.GetValue(valueName).ToString();
             sims2Subkey.Close();
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EA Games", displayName, "Neighborhoods");
@@ -28,17 +28,53 @@ namespace Sims2HoodDuplicator
 
         internal static string GetNeighborhoodTemplatesDirectory(string pack, bool getStorytellingTemplates = false)
         {
+            if (!pack.Equals("The Sims 2") && UltimateCollectionIsInstalled())
+            {
+                return GetUCNeighborhoodTemplatesDirectory(pack, getStorytellingTemplates);
+            }
+
             string keyName = string.Format(@"Software{0}\EA Games\{1}", Environment.Is64BitProcess ? @"\WOW6432Node" : "", pack);
-            string valueName = "Install Dir";
             var packSubkey = Registry.LocalMachine.OpenSubKey(keyName, false);
             if (packSubkey == null)
             {
                 return null;
             }
 
+            string valueName = "Install Dir";
             string installationDir = packSubkey.GetValue(valueName).ToString();
             packSubkey.Close();
             return Path.Combine(installationDir, "TSData", "Res", "UserData", getStorytellingTemplates ? "Storytelling" : "Neighborhoods");
+        }
+
+        private static bool UltimateCollectionIsInstalled()
+        {
+            string keyName = string.Format(@"Software{0}\EA Games\The Sims 2", Environment.Is64BitProcess ? @"\WOW6432Node" : "");
+            var packSubkey = Registry.LocalMachine.OpenSubKey(keyName, false);
+            if (packSubkey == null)
+            {
+                return false;
+            }
+
+            string valueName = "Install Dir";
+            string installationDir = packSubkey.GetValue(valueName).ToString();
+            packSubkey.Close();
+            return installationDir.Contains("Ultimate Collection");
+        }
+
+        private static string GetUCNeighborhoodTemplatesDirectory(string pack, bool getStorytellingTemplates)
+        {
+            string keyName = string.Format(@"Software{0}\EA Games\The Sims 2", Environment.Is64BitProcess ? @"\WOW6432Node" : "");
+            var packSubkey = Registry.LocalMachine.OpenSubKey(keyName, false);
+            if (packSubkey == null)
+            {
+                return null;
+            }
+
+            string valueName = "Install Dir";
+            string installationDir = packSubkey.GetValue(valueName).ToString();
+            packSubkey.Close();
+            return Path.Combine(installationDir, "..", "..", PackToUCFolderMappings[pack], "TSData", "Res", "UserData",
+                                getStorytellingTemplates ? "Storytelling" : "Neighborhoods");
         }
 
         internal static string DuplicateNeighborhoodTemplate(string sourceDir, ProgressBar progressBar = null, List<string> sourceStorytellingFiles = null)
@@ -436,6 +472,12 @@ namespace Sims2HoodDuplicator
         }
 
         private static readonly Regex NeighborhoodRegex = new Regex(@"(Neighborhood|(Suburb|Downtown|University|Vacation)[0-9]{3})\.package");
+        private static readonly Dictionary<string, string> PackToUCFolderMappings = new Dictionary<string, string>
+        {
+            { "The Sims 2 Seasons", "Seasons" },
+            { "The Sims 2 FreeTime", "Free Time" },
+            { "The Sims 2 Apartment Life", "Apartment Life" }
+        };
         private static long CopiedBytes, TotalBytes;
     }
 }

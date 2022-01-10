@@ -45,7 +45,7 @@ namespace Sims2HoodDuplicator
                 foreach (string pack in Packs)
                 {
                     string neighborhoodTemplatesDirectory = Duplication.GetNeighborhoodTemplatesDirectory(pack);
-                    if (neighborhoodTemplatesDirectory != null)
+                    if (neighborhoodTemplatesDirectory != null && Directory.Exists(neighborhoodTemplatesDirectory))
                     {
                         string[] dirs = Directory.GetDirectories(neighborhoodTemplatesDirectory);
                         foreach (string dir in dirs)
