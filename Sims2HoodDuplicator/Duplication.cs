@@ -144,6 +144,7 @@ namespace Sims2HoodDuplicator
         private static void EditCopiedNIDs(string newFolder, string destFolderName, List<uint> usedNIDs)
         {
             FileInfo[] files = new DirectoryInfo(newFolder).GetFiles();
+            Array.Sort(files, new FileInfoComparer());
             string storytellingDirectory = Path.Combine(newFolder, "Storytelling");
             foreach (FileInfo file in files)
             {
@@ -399,6 +400,38 @@ namespace Sims2HoodDuplicator
 
             public uint NID { get { return myNID; } }
             public uint Location { get { return myLocation; } }
+        }
+
+        private class FileInfoComparer : IComparer<FileInfo>
+        {
+            public int Compare(FileInfo x, FileInfo y)
+            {
+                string xName = x.Name;
+                string yName = y.Name;
+                string[] categories = new string[] { "Neighborhood", "University", "Downtown", "Suburb", "Vacation" };
+                int xIndex = 5;
+                int yIndex = 5;
+                for (int i = 0; i < categories.Length; i++)
+                {
+                    string category = categories[i];
+                    if (xName.Contains(category) && yName.Contains(category))
+                    {
+                        return xName.CompareTo(yName);
+                    }
+
+                    if (xName.Contains(category))
+                    {
+                        xIndex = i;
+                    }
+
+                    if (yName.Contains(category))
+                    {
+                        yIndex = i;
+                    }
+                }
+
+                return xIndex - yIndex;
+            }
         }
 
         private static readonly Regex NeighborhoodRegex = new Regex(@"(Neighborhood|(Suburb|Downtown|University|Vacation)[0-9]{3})\.package");
