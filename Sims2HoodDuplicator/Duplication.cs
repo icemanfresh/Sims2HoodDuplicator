@@ -107,7 +107,7 @@ namespace Sims2HoodDuplicator
                     fileName = fileName.Replace(sourceFolderName, destFolderName);
                 }
                 string destFile = Path.Combine(destDirName, fileName);
-                if (!destFile.EndsWith(".bkp"))
+                if (!destFile.EndsWith(".bkp") && !destFile.EndsWith(".bak"))
                 {
                     file.CopyTo(destFile, false);
                 }
