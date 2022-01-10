@@ -18,7 +18,6 @@ namespace Sims2HoodDuplicator
             var sims2Subkey = Registry.LocalMachine.OpenSubKey(keyName, false);
             if (sims2Subkey == null)
             {
-                sims2Subkey.Close();
                 return null;
             }
 
@@ -34,7 +33,6 @@ namespace Sims2HoodDuplicator
             var packSubkey = Registry.LocalMachine.OpenSubKey(keyName, false);
             if (packSubkey == null)
             {
-                packSubkey.Close();
                 return null;
             }
 
