@@ -212,38 +212,25 @@ namespace Sims2HoodDuplicator
                         stream.Read(data, 0, 4);
                         uint neighborhoodBytes = BitConverter.ToUInt32(data, 0);
                         var nameBytes = Encoding.Unicode.GetBytes(destFolderName);
-                        byte[] newNeighborhoodBytes = new byte[4];
-                        int index = 0;
-                        foreach (byte b in nameBytes)
+                        byte[] newNeighborhoodBytes = new byte[neighborhoodBytes];
+                        int nameBytesIndex = 0;
+                        for (int i = 0; i < neighborhoodBytes;)
                         {
-                            if (b != 0)
+                            if (nameBytesIndex == nameBytes.Length)
                             {
-                                newNeighborhoodBytes[index++] = b;
+                                newNeighborhoodBytes[i++] = ((byte)char.MinValue);
+                            }
+                            else if (nameBytes[nameBytesIndex] != 0)
+                            {
+                                newNeighborhoodBytes[i++] = nameBytes[nameBytesIndex++];
+                            }
+                            else
+                            {
+                                nameBytesIndex++;
                             }
                         }
 
-                        if (neighborhoodBytes != 4) // Really wish Maxis kept folder names fixed at 4 characters :\
-                        {
-                            string tempFile = Path.GetTempFileName();
-                            using (FileStream temp = File.Open(tempFile, FileMode.Create, FileAccess.ReadWrite))
-                            {
-                                stream.CopyTo(temp);
-                                stream.Seek(oldID.Location, SeekOrigin.Begin);
-                                stream.SetLength(stream.Position);
-                                data = new byte[4] { 0x04, 0x00, 0x00, 0x00 };
-                                stream.Write(data, 0, 4);
-                                stream.Write(newNeighborhoodBytes, 0, 4);
-                                long currentPosition = stream.Position;
-                                temp.Seek(neighborhoodBytes, SeekOrigin.Begin);
-                                temp.CopyTo(stream);
-                                stream.Seek(currentPosition, SeekOrigin.Begin);
-                            }
-                            File.Delete(tempFile);
-                        }
-                        else
-                        {
-                            stream.Write(newNeighborhoodBytes, 0, 4);
-                        }
+                        stream.Write(newNeighborhoodBytes, 0, (int)neighborhoodBytes);
                         data[0] = (byte)newID;
                         data[1] = (byte)(newID >> 8);
                         data[2] = (byte)(newID >> 16);
