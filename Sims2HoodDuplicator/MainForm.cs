@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Sims2HoodDuplicator
 {
@@ -21,9 +22,19 @@ namespace Sims2HoodDuplicator
             this.mutex = mutex;
             Application.ApplicationExit += OnExit;
             InitializeComponent();
+            InitializeFolderBrowser();
             LocalizeUI();
             PopulateNewNeighborhoodDropdown();
             GetExistingNeighborhoods();
+        }
+
+        private void InitializeFolderBrowser()
+        {
+            this.FolderBrowser = new CommonOpenFileDialog
+            {
+                InitialDirectory = Duplication.GetUserNeighborhoodsDirectory(),
+                IsFolderPicker = true
+            };
         }
 
         private void LocalizeUI()
@@ -33,6 +44,7 @@ namespace Sims2HoodDuplicator
             ExistingRadioButton.Text = Strings.Existing;
             ExistingRadioButton.Location = new System.Drawing.Point(NewRadioButton.Right, ExistingRadioButton.Top);
             DuplicateButton.Text = Strings.Duplicate;
+            SelectFolderButton.Text = Strings.Select_Folder;
         }
 
         private void PopulateNewNeighborhoodDropdown()
@@ -157,6 +169,7 @@ namespace Sims2HoodDuplicator
         };
         private List<Neighborhood> NewNeighborhoods, ExistingNeighborhoods;
         private Thread DuplicationThread;
+        private CommonOpenFileDialog FolderBrowser;
         private readonly string UserNeighborhoodsDirectory = Duplication.GetUserNeighborhoodsDirectory();
         private string CurrentCreatedFolder;
         private readonly Mutex mutex;
@@ -202,6 +215,35 @@ namespace Sims2HoodDuplicator
         private void DuplicateButton_Click(object sender, EventArgs e)
         {
             Duplicate((Neighborhood)NeighborhoodDropdown.SelectedItem);
+        }
+
+        private void SelectFolderButton_Click(object sender, EventArgs e)
+        {
+            if (FolderBrowser.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                string duplicatedFolder = FolderBrowser.FileName;
+                string[] files = Directory.GetFiles(duplicatedFolder);
+                bool hasNoNeighborhoodFile = true;
+                foreach (string file in files)
+                {
+                    if (file.EndsWith("Neighborhood.package"))
+                    {
+                        hasNoNeighborhoodFile = false;
+                        break;
+                    }
+                }
+
+                DialogResult result = DialogResult.Yes;
+                if (hasNoNeighborhoodFile)
+                {
+                    result = MessageBox.Show(Strings.No_Neighborhood_Package, "", MessageBoxButtons.YesNo);
+                }
+
+                if (result == DialogResult.Yes)
+                {
+                    Duplicate(new Neighborhood(Path.GetFileName(duplicatedFolder), duplicatedFolder));
+                }
+            }
         }
 
         private void Duplicate(Neighborhood neighborhood)
@@ -302,6 +344,7 @@ namespace Sims2HoodDuplicator
         {
             NeighborhoodDropdown.Enabled = enabled;
             DuplicateButton.Enabled = enabled;
+            SelectFolderButton.Enabled = enabled;
             NewRadioButton.Enabled = enabled;
             ExistingRadioButton.Enabled = enabled && ExistingNeighborhoods.Count > 0;
         }

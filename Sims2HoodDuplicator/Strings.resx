@@ -144,6 +144,9 @@
   <data name="No Longer Exists" xml:space="preserve">
     <value>The neighborhood you selected no longer exists. The list of available neighborhoods will be refreshed.</value>
   </data>
+  <data name="No Neighborhood Package" xml:space="preserve">
+    <value>The folder you selected contains no neighborhood package file. Do you still want to copy this folder?</value>
+  </data>
   <data name="Not Installed" xml:space="preserve">
     <value>No The Sims 2 installation was detected. Please install The Sims 2 before running this application.</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="Riverblossom Hills" xml:space="preserve">
     <value>Riverblossom Hills</value>
+  </data>
+  <data name="Select Folder" xml:space="preserve">
+    <value>Select Folder</value>
   </data>
   <data name="Strangetown" xml:space="preserve">
     <value>Strangetown</value>

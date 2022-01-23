@@ -142,6 +142,15 @@ namespace Sims2HoodDuplicator {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The folder you selected contains no neighborhood package file. Do you still want to copy this folder?.
+        /// </summary>
+        public static string No_Neighborhood_Package {
+            get {
+                return ResourceManager.GetString("No Neighborhood Package", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No The Sims 2 installation was detected. Please install The Sims 2 before running this application..
         /// </summary>
         public static string Not_Installed {
@@ -174,6 +183,15 @@ namespace Sims2HoodDuplicator {
         public static string Riverblossom_Hills {
             get {
                 return ResourceManager.GetString("Riverblossom Hills", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Folder.
+        /// </summary>
+        public static string Select_Folder {
+            get {
+                return ResourceManager.GetString("Select Folder", resourceCulture);
             }
         }
         

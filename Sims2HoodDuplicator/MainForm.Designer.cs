@@ -37,6 +37,7 @@ namespace Sims2HoodDuplicator
             this.NewRadioButton = new System.Windows.Forms.RadioButton();
             this.NeighborhoodImageBox = new System.Windows.Forms.PictureBox();
             this.CopyProgressBar = new System.Windows.Forms.ProgressBar();
+            this.SelectFolderButton = new System.Windows.Forms.Button();
             this.MainPanel.SuspendLayout();
             this.RadioGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NeighborhoodImageBox)).BeginInit();
@@ -69,6 +70,7 @@ namespace Sims2HoodDuplicator
             // 
             // MainPanel
             // 
+            this.MainPanel.Controls.Add(this.SelectFolderButton);
             this.MainPanel.Controls.Add(this.RadioGroup);
             this.MainPanel.Controls.Add(this.NeighborhoodImageBox);
             this.MainPanel.Controls.Add(this.CopyProgressBar);
@@ -77,7 +79,7 @@ namespace Sims2HoodDuplicator
             this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainPanel.Location = new System.Drawing.Point(0, 0);
             this.MainPanel.Name = "MainPanel";
-            this.MainPanel.Size = new System.Drawing.Size(424, 262);
+            this.MainPanel.Size = new System.Drawing.Size(424, 281);
             this.MainPanel.TabIndex = 2;
             // 
             // RadioGroup
@@ -134,13 +136,26 @@ namespace Sims2HoodDuplicator
             this.CopyProgressBar.Size = new System.Drawing.Size(402, 12);
             this.CopyProgressBar.TabIndex = 2;
             // 
+            // SelectFolderButton
+            // 
+            this.SelectFolderButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SelectFolderButton.AutoSize = true;
+            this.SelectFolderButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.SelectFolderButton.Location = new System.Drawing.Point(333, 253);
+            this.SelectFolderButton.Name = "SelectFolderButton";
+            this.SelectFolderButton.Size = new System.Drawing.Size(79, 23);
+            this.SelectFolderButton.TabIndex = 6;
+            this.SelectFolderButton.Text = "Select Folder";
+            this.SelectFolderButton.UseVisualStyleBackColor = true;
+            this.SelectFolderButton.Click += new System.EventHandler(this.SelectFolderButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(424, 262);
+            this.ClientSize = new System.Drawing.Size(424, 281);
             this.Controls.Add(this.MainPanel);
-            this.MinimumSize = new System.Drawing.Size(440, 301);
+            this.MinimumSize = new System.Drawing.Size(440, 320);
             this.Name = "MainForm";
             this.Text = "The Sims 2 Hood Duplicator";
             this.MainPanel.ResumeLayout(false);
@@ -157,6 +172,7 @@ namespace Sims2HoodDuplicator
         private System.Windows.Forms.Panel RadioGroup;
         private System.Windows.Forms.RadioButton NewRadioButton;
         private System.Windows.Forms.RadioButton ExistingRadioButton;
+        private System.Windows.Forms.Button SelectFolderButton;
     }
 }
 
