@@ -156,7 +156,7 @@ namespace Sims2HoodDuplicator
                     file.CopyTo(destFile, false);
                 }
                 CopiedBytes += file.Length;
-                progressBar?.Invoke(new Action(() => progressBar.Value = (int) (((double) CopiedBytes / TotalBytes) * 100)));
+                progressBar?.Invoke(new Action(() => progressBar.Value = (int) ((double) CopiedBytes / TotalBytes * 100)));
             }
 
             foreach (DirectoryInfo subdir in dirs)
@@ -182,7 +182,7 @@ namespace Sims2HoodDuplicator
                     if (progressBar != null)
                     {
                         CopiedBytes += file.Length;
-                        progressBar?.Invoke(new Action(() => progressBar.Value = (int)(((double)CopiedBytes / TotalBytes) * 100)));
+                        progressBar?.Invoke(new Action(() => progressBar.Value = (int)((double)CopiedBytes / TotalBytes * 100)));
                     }
                 }
             }
@@ -228,7 +228,7 @@ namespace Sims2HoodDuplicator
                         {
                             if (nameBytesIndex == nameBytes.Length)
                             {
-                                newNeighborhoodBytes[i++] = ((byte)char.MinValue);
+                                newNeighborhoodBytes[i++] = (byte)char.MinValue;
                             }
                             else if (nameBytes[nameBytesIndex] != 0)
                             {
@@ -411,7 +411,7 @@ namespace Sims2HoodDuplicator
                 }
 
                 stream.Seek(location + 4, SeekOrigin.Begin);
-                location = ((uint)stream.Position);
+                location = (uint)stream.Position;
                 stream.Read(data, 0, 4);
                 uint neighborhoodBytes = BitConverter.ToUInt32(data, 0);
                 stream.Seek(neighborhoodBytes, SeekOrigin.Current);

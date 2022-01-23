@@ -201,7 +201,7 @@ namespace Sims2HoodDuplicator
 
         private void DuplicateButton_Click(object sender, EventArgs e)
         {
-            Duplicate(((Neighborhood)NeighborhoodDropdown.SelectedItem));
+            Duplicate((Neighborhood)NeighborhoodDropdown.SelectedItem);
         }
 
         private void Duplicate(Neighborhood neighborhood)
