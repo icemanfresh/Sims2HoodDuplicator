@@ -21,8 +21,13 @@ namespace Sims2HoodDuplicator
             }
 
             string valueName = "DisplayName";
-            string displayName = sims2Subkey.GetValue(valueName).ToString();
+            var value = sims2Subkey.GetValue(valueName);
             sims2Subkey.Close();
+            if (value == null)
+            {
+                return null;
+            }
+            string displayName = value.ToString();
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EA Games", displayName, "Neighborhoods");
         }
 
@@ -41,8 +46,13 @@ namespace Sims2HoodDuplicator
             }
 
             string valueName = "Install Dir";
-            string installationDir = packSubkey.GetValue(valueName).ToString();
+            var value = packSubkey.GetValue(valueName);
             packSubkey.Close();
+            if (value == null)
+            {
+                return null;
+            }
+            string installationDir = value.ToString();
             return Path.Combine(installationDir, "TSData", "Res", "UserData", getStorytellingTemplates ? "Storytelling" : "Neighborhoods");
         }
 
