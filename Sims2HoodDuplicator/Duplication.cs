@@ -273,15 +273,23 @@ namespace Sims2HoodDuplicator
             {
                 if (screenshot.Name.Contains(hyphenatedOldID))
                 {
-                    File.Move(screenshot.FullName, screenshot.FullName.Replace(hyphenatedOldID, hyphenatedNewID));
+                    string newName = screenshot.FullName.Replace(hyphenatedOldID, hyphenatedNewID);
+                    if (!File.Exists(newName))
+                    {
+                        File.Move(screenshot.FullName, newName);
+                    }
                 }
                 else if (screenshot.Name.Contains(webentryOldID))
                 {
-                    string xml = File.ReadAllText(screenshot.FullName);
-                    xml = xml.Replace(hyphenatedOldID, hyphenatedNewID);
-                    xml = xml.Replace(oldIDNode, newIDNode);
-                    File.WriteAllText(screenshot.FullName, xml);
-                    File.Move(screenshot.FullName, screenshot.FullName.Replace(webentryOldID, webentryNewID));
+                    string newName = screenshot.FullName.Replace(webentryOldID, webentryNewID);
+                    if (!File.Exists(newName))
+                    {
+                        string xml = File.ReadAllText(screenshot.FullName);
+                        xml = xml.Replace(hyphenatedOldID, hyphenatedNewID);
+                        xml = xml.Replace(oldIDNode, newIDNode);
+                        File.WriteAllText(screenshot.FullName, xml);
+                        File.Move(screenshot.FullName, newName);
+                    }
                 }
             }
         }
