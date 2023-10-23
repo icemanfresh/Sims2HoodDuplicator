@@ -5,6 +5,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Linq;
 
 namespace Sims2HoodDuplicator
 {
@@ -93,11 +94,15 @@ namespace Sims2HoodDuplicator
                     }
                 }
             }
+
             NeighborhoodDropdown.Items.Clear();
-            NeighborhoodDropdown.Items.AddRange(NewNeighborhoods.ToArray());
-            NeighborhoodDropdown.SelectedIndex = 0;
-            Neighborhood selected = (Neighborhood) NeighborhoodDropdown.SelectedItem;
-            DisplayNeighborhoodImage(selected.Directory);
+            if (NewNeighborhoods.Any())
+            {
+                NeighborhoodDropdown.Items.AddRange(NewNeighborhoods.ToArray());
+                NeighborhoodDropdown.SelectedIndex = 0;
+                Neighborhood selected = (Neighborhood)NeighborhoodDropdown.SelectedItem;
+                DisplayNeighborhoodImage(selected.Directory);
+            }
         }
 
         private void GetExistingNeighborhoods()

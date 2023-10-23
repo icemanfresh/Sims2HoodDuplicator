@@ -45,15 +45,24 @@ namespace Sims2HoodDuplicator
                 return null;
             }
 
-            string valueName = "Install Dir";
-            var value = packSubkey.GetValue(valueName);
-            packSubkey.Close();
-            if (value == null)
+            var possibleInstallDirValues = new[] { "Install Dir", "Install Dir Parent" };
+            foreach (var installDirValue in possibleInstallDirValues)
             {
-                return null;
+                var value = packSubkey.GetValue(installDirValue);
+                packSubkey.Close();
+                if (value == null)
+                {
+                    continue;
+                }
+                var installationDir = value.ToString();
+                var neighborhoodDir = Path.Combine(installationDir, "TSData", "Res", "UserData", getStorytellingTemplates ? "Storytelling" : "Neighborhoods");
+                if (Directory.Exists(neighborhoodDir))
+                {
+                    return neighborhoodDir;
+                }
             }
-            string installationDir = value.ToString();
-            return Path.Combine(installationDir, "TSData", "Res", "UserData", getStorytellingTemplates ? "Storytelling" : "Neighborhoods");
+
+            return null;
         }
 
         private static bool UltimateCollectionIsInstalled()
@@ -80,11 +89,25 @@ namespace Sims2HoodDuplicator
                 return null;
             }
 
-            string valueName = "Install Dir";
-            string installationDir = packSubkey.GetValue(valueName).ToString();
-            packSubkey.Close();
-            return Path.Combine(installationDir, "..", "..", PackToUCFolderMappings[pack], "TSData", "Res", "UserData",
-                                getStorytellingTemplates ? "Storytelling" : "Neighborhoods");
+            var possibleInstallDirValues = new[] { "Install Dir", "Install Dir Parent" };
+            foreach (var installDirValue in possibleInstallDirValues)
+            {
+                var value = packSubkey.GetValue(installDirValue);
+                packSubkey.Close();
+                if (value == null)
+                {
+                    continue;
+                }
+                var installationDir = value.ToString();
+                var neighborhoodDir = Path.Combine(installationDir, "..", "..", PackToUCFolderMappings[pack], "TSData", "Res", "UserData",
+                                                   getStorytellingTemplates ? "Storytelling" : "Neighborhoods");
+                if (Directory.Exists(neighborhoodDir))
+                {
+                    return neighborhoodDir;
+                }
+            }
+
+            return null;
         }
 
         internal static string DuplicateNeighborhoodTemplate(string sourceDir, ProgressBar progressBar = null, List<string> sourceStorytellingFiles = null)
