@@ -159,6 +159,9 @@
   <data name="Riverblossom Hills" xml:space="preserve">
     <value>Riverblossom Hills</value>
   </data>
+  <data name="Select" xml:space="preserve">
+    <value>Select</value>
+  </data>
   <data name="Select Folder" xml:space="preserve">
     <value>Select Folder</value>
   </data>
@@ -167,6 +170,9 @@
   </data>
   <data name="Success" xml:space="preserve">
     <value>The neighborbood was successfully duplicated as {0}.</value>
+  </data>
+  <data name="The Sims 2 Classic" xml:space="preserve">
+    <value>The Sims 2 Original/Ultimate Edition</value>
   </data>
   <data name="Update Available" xml:space="preserve">
     <value>There is a new version available. Would you like to update?</value>
@@ -179,5 +185,14 @@
   </data>
   <data name="Veronaville" xml:space="preserve">
     <value>Veronaville</value>
+  </data>
+  <data name="The Sims 2 Legacy" xml:space="preserve">
+    <value>The Sims 2 Legacy Edition</value>
+  </data>
+  <data name="Multiple Variants" xml:space="preserve">
+    <value>Multiple installations of The Sims 2 were found. Which edition do you want to work with?</value>
+  </data>
+  <data name="Select Version" xml:space="preserve">
+    <value>Select Version</value>
   </data>
 </root>

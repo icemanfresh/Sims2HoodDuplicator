@@ -237,6 +237,12 @@
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Compile Include="Update.cs" />
+    <Compile Include="VariantDropdown.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VariantDropdown.Designer.cs">
+      <DependentUpon>VariantDropdown.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -274,6 +280,9 @@
     <EmbeddedResource Include="Strings.th.resx" />
     <EmbeddedResource Include="Strings.zh-CN.resx" />
     <EmbeddedResource Include="Strings.zh-TW.resx" />
+    <EmbeddedResource Include="VariantDropdown.resx">
+      <DependentUpon>VariantDropdown.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">

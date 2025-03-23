@@ -117,37 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Belladonna Cove" xml:space="preserve">
-    <value>ベラドナコーブ</value>
-  </data>
-  <data name="Desiderata Valley" xml:space="preserve">
-    <value>デシドラータバレー</value>
-  </data>
-  <data name="Pleasantview" xml:space="preserve">
-    <value>プリーザントビュー</value>
-  </data>
-  <data name="Riverblossom Hills" xml:space="preserve">
-    <value>リバーブロッサム・ヒルズ</value>
-  </data>
-  <data name="Select" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Strangetown" xml:space="preserve">
-    <value>ストレンジタウン</value>
-  </data>
-  <data name="The Sims 2 Classic" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Veronaville" xml:space="preserve">
-    <value>ベロナービル</value>
-  </data>
-  <data name="The Sims 2 Legacy" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Multiple Variants" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Select Version" xml:space="preserve">
-    <value />
-  </data>
 </root>

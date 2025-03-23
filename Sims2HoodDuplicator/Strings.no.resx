@@ -129,10 +129,25 @@
   <data name="Riverblossom Hills" xml:space="preserve">
     <value>Elveblomstlia</value>
   </data>
+  <data name="Select" xml:space="preserve">
+    <value />
+  </data>
   <data name="Strangetown" xml:space="preserve">
     <value>Snålfoss</value>
   </data>
+  <data name="The Sims 2 Classic" xml:space="preserve">
+    <value />
+  </data>
   <data name="Veronaville" xml:space="preserve">
     <value>Veronavik</value>
+  </data>
+  <data name="The Sims 2 Legacy" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Multiple Variants" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Select Version" xml:space="preserve">
+    <value />
   </data>
 </root>

@@ -9,15 +9,42 @@ using Microsoft.Win32;
 
 namespace Sims2HoodDuplicator
 {
+  internal enum Sims2Variant
+  {
+    Classic,
+    Legacy,
+    NotInstalled,
+  }
+
   internal class Duplication
   {
-    internal static string GetUserNeighborhoodsDirectory()
+    internal static RegistryKey GetClassicEditionSubkey()
     {
       string keyName = string.Format(
         @"Software{0}\EA Games\The Sims 2",
         Environment.Is64BitProcess ? @"\WOW6432Node" : ""
       );
-      var sims2Subkey = Registry.LocalMachine.OpenSubKey(keyName, false);
+      return Registry.LocalMachine.OpenSubKey(keyName, false);
+    }
+
+    internal static RegistryKey GetLegacyEditionSubkey()
+    {
+      return Registry.CurrentUser.OpenSubKey(@"Software\Electronic Arts\The Sims 2 Ultimate Collection 25", false);
+    }
+
+    internal static string GetUserNeighborhoodsDirectory(Sims2Variant variant = Sims2Variant.Classic)
+    {
+      RegistryKey sims2Subkey = null;
+      switch (variant)
+      {
+        case Sims2Variant.Classic:
+          sims2Subkey = GetClassicEditionSubkey();
+          break;
+        case Sims2Variant.Legacy:
+          sims2Subkey = GetLegacyEditionSubkey();
+          break;
+      }
+
       if (sims2Subkey == null)
       {
         return null;

@@ -11,17 +11,37 @@ namespace Sims2HoodDuplicator
 {
   public partial class MainForm : Form
   {
+    private readonly Sims2Variant variant;
+
     public MainForm(Mutex mutex)
     {
       Icon = Properties.Resources.Icon;
-      if (Duplication.GetUserNeighborhoodsDirectory() == null)
+      var isClassicEditionInstalled = Duplication.GetClassicEditionSubkey() != null;
+      var isLegacyEditionInstalled = Duplication.GetLegacyEditionSubkey() != null;
+
+      if (isClassicEditionInstalled && isLegacyEditionInstalled)
+      {
+        var variantDropdown = new VariantDropdown();
+        var result = variantDropdown.ShowDialog();
+        if (result == DialogResult.Cancel)
+        {
+          ExitImmediately(mutex);
+          return;
+        }
+        variant = variantDropdown.Variant;
+      }
+      else
+      {
+        variant =
+          isClassicEditionInstalled ? Sims2Variant.Classic
+          : isLegacyEditionInstalled ? Sims2Variant.Legacy
+          : Sims2Variant.NotInstalled;
+      }
+
+      if (variant == Sims2Variant.NotInstalled)
       {
         MessageBox.Show(Strings.Not_Installed);
-        Load += (s, e) =>
-        {
-          mutex.Close();
-          Close();
-        };
+        ExitImmediately(mutex);
         return;
       }
       this.mutex = mutex;
@@ -35,7 +55,7 @@ namespace Sims2HoodDuplicator
 
     private void InitializeFolderBrowser()
     {
-      this.FolderBrowser = new CommonOpenFileDialog
+      FolderBrowser = new CommonOpenFileDialog
       {
         InitialDirectory = Duplication.GetUserNeighborhoodsDirectory(),
         IsFolderPicker = true,
@@ -448,6 +468,15 @@ namespace Sims2HoodDuplicator
       {
         DisplayNeighborhoodImage(selected.Directory);
       }
+    }
+
+    private void ExitImmediately(Mutex mutex)
+    {
+      Load += (s, e) =>
+      {
+        mutex.Close();
+        Close();
+      };
     }
 
     internal void OnExit(object sender, EventArgs e)

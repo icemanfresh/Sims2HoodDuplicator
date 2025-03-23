@@ -124,6 +124,15 @@ namespace Sims2HoodDuplicator {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Multiple installations of The Sims 2 were found. Which edition do you want to work with?.
+        /// </summary>
+        public static string Multiple_Variants {
+            get {
+                return ResourceManager.GetString("Multiple Variants", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New.
         /// </summary>
         public static string New {
@@ -187,11 +196,29 @@ namespace Sims2HoodDuplicator {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select.
+        /// </summary>
+        public static string Select {
+            get {
+                return ResourceManager.GetString("Select", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Folder.
         /// </summary>
         public static string Select_Folder {
             get {
                 return ResourceManager.GetString("Select Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Version.
+        /// </summary>
+        public static string Select_Version {
+            get {
+                return ResourceManager.GetString("Select Version", resourceCulture);
             }
         }
         
@@ -210,6 +237,24 @@ namespace Sims2HoodDuplicator {
         public static string Success {
             get {
                 return ResourceManager.GetString("Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Sims 2 Original/Ultimate Edition.
+        /// </summary>
+        public static string The_Sims_2_Classic {
+            get {
+                return ResourceManager.GetString("The Sims 2 Classic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Sims 2 Legacy Edition.
+        /// </summary>
+        public static string The_Sims_2_Legacy {
+            get {
+                return ResourceManager.GetString("The Sims 2 Legacy", resourceCulture);
             }
         }
         
