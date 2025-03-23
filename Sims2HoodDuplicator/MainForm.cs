@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.IO;
-using System.Threading;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Microsoft.WindowsAPICodePack.Dialogs;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Windows.Forms;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Sims2HoodDuplicator
 {
@@ -38,7 +38,7 @@ namespace Sims2HoodDuplicator
             this.FolderBrowser = new CommonOpenFileDialog
             {
                 InitialDirectory = Duplication.GetUserNeighborhoodsDirectory(),
-                IsFolderPicker = true
+                IsFolderPicker = true,
             };
         }
 
@@ -47,7 +47,10 @@ namespace Sims2HoodDuplicator
             Text = Strings.Program_Name;
             NewRadioButton.Text = Strings.New;
             ExistingRadioButton.Text = Strings.Existing;
-            ExistingRadioButton.Location = new System.Drawing.Point(NewRadioButton.Right, ExistingRadioButton.Top);
+            ExistingRadioButton.Location = new System.Drawing.Point(
+                NewRadioButton.Right,
+                ExistingRadioButton.Top
+            );
             DuplicateButton.Text = Strings.Duplicate;
             SelectFolderButton.Text = Strings.Select_Folder;
         }
@@ -61,8 +64,12 @@ namespace Sims2HoodDuplicator
                 NeighborhoodDropdown.ValueMember = "Directory";
                 foreach (string pack in Packs)
                 {
-                    string neighborhoodTemplatesDirectory = Duplication.GetNeighborhoodTemplatesDirectory(pack);
-                    if (neighborhoodTemplatesDirectory != null && Directory.Exists(neighborhoodTemplatesDirectory))
+                    string neighborhoodTemplatesDirectory =
+                        Duplication.GetNeighborhoodTemplatesDirectory(pack);
+                    if (
+                        neighborhoodTemplatesDirectory != null
+                        && Directory.Exists(neighborhoodTemplatesDirectory)
+                    )
                     {
                         string[] dirs = Directory.GetDirectories(neighborhoodTemplatesDirectory);
                         foreach (string dir in dirs)
@@ -73,25 +80,47 @@ namespace Sims2HoodDuplicator
                                 if (NeighborhoodStorytellingIDMappings.ContainsKey(folderName))
                                 {
                                     List<string> screenshotFiles = new List<string>();
-                                    List<string> storytellingIDs = NeighborhoodStorytellingIDMappings[folderName];
-                                    string[] files = Directory.GetFiles(Duplication.GetNeighborhoodTemplatesDirectory(pack, true));
+                                    List<string> storytellingIDs =
+                                        NeighborhoodStorytellingIDMappings[folderName];
+                                    string[] files = Directory.GetFiles(
+                                        Duplication.GetNeighborhoodTemplatesDirectory(pack, true)
+                                    );
                                     foreach (string file in files)
                                     {
                                         string fileName = new FileInfo(file).Name;
                                         foreach (string id in storytellingIDs)
                                         {
-                                            Regex regex = new Regex(@"^(snapshot_" + id + @"|thumbnail_" + id + "|webentry_" + id + ")");
+                                            Regex regex = new Regex(
+                                                @"^(snapshot_"
+                                                    + id
+                                                    + @"|thumbnail_"
+                                                    + id
+                                                    + "|webentry_"
+                                                    + id
+                                                    + ")"
+                                            );
                                             if (regex.IsMatch(fileName))
                                             {
                                                 screenshotFiles.Add(file);
                                             }
                                         }
                                     }
-                                    NewNeighborhoods.Add(new Neighborhood(FolderNeighborhoodNameMappings[folderName], dir, screenshotFiles));
+                                    NewNeighborhoods.Add(
+                                        new Neighborhood(
+                                            FolderNeighborhoodNameMappings[folderName],
+                                            dir,
+                                            screenshotFiles
+                                        )
+                                    );
                                 }
                                 else
                                 {
-                                    NewNeighborhoods.Add(new Neighborhood(FolderNeighborhoodNameMappings[folderName], dir));
+                                    NewNeighborhoods.Add(
+                                        new Neighborhood(
+                                            FolderNeighborhoodNameMappings[folderName],
+                                            dir
+                                        )
+                                    );
                                 }
                             }
                         }
@@ -160,26 +189,64 @@ namespace Sims2HoodDuplicator
         private System.Windows.Forms.ProgressBar CopyProgressBar;
         private System.Windows.Forms.PictureBox NeighborhoodImageBox;
 
-        private readonly string[] Packs = new string[] { "The Sims 2", "The Sims 2 Seasons", "The Sims 2 FreeTime", "The Sims 2 Apartment Life" };
-        private readonly Dictionary<string, string> FolderNeighborhoodNameMappings = new Dictionary<string, string>
+        private readonly string[] Packs = new string[]
+        {
+            "The Sims 2",
+            "The Sims 2 Seasons",
+            "The Sims 2 FreeTime",
+            "The Sims 2 Apartment Life",
+        };
+        private readonly Dictionary<string, string> FolderNeighborhoodNameMappings = new Dictionary<
+            string,
+            string
+        >
         {
             { "N001", Strings.Pleasantview },
             { "N002", Strings.Strangetown },
             { "N003", Strings.Veronaville },
             { "G001", Strings.Riverblossom_Hills },
             { "F001", Strings.Desiderata_Valley },
-            { "E001", Strings.Belladonna_Cove }
+            { "E001", Strings.Belladonna_Cove },
         };
-        private readonly Dictionary<string, List<string>> NeighborhoodStorytellingIDMappings = new Dictionary<string, List<string>>
-        {
-            { "N001", new List<string>() { "00000001", "2dae7a30", "2dae895f", "6dae6a73", "adae8020", "cdae71fd", "edae8d77" } },
-            { "N002", new List<string>() { "00000002", "0d917b96", "2d7b3372", "6d7b3369", "cd338e66", "ed7b3373" } },
-            { "N003", new List<string>() { "00000003", "2da007fb", "cda007ff", "eda007fa" } }
-        };
-        private List<Neighborhood> NewNeighborhoods, ExistingNeighborhoods;
+        private readonly Dictionary<string, List<string>> NeighborhoodStorytellingIDMappings =
+            new Dictionary<string, List<string>>
+            {
+                {
+                    "N001",
+                    new List<string>()
+                    {
+                        "00000001",
+                        "2dae7a30",
+                        "2dae895f",
+                        "6dae6a73",
+                        "adae8020",
+                        "cdae71fd",
+                        "edae8d77",
+                    }
+                },
+                {
+                    "N002",
+                    new List<string>()
+                    {
+                        "00000002",
+                        "0d917b96",
+                        "2d7b3372",
+                        "6d7b3369",
+                        "cd338e66",
+                        "ed7b3373",
+                    }
+                },
+                {
+                    "N003",
+                    new List<string>() { "00000003", "2da007fb", "cda007ff", "eda007fa" }
+                },
+            };
+        private List<Neighborhood> NewNeighborhoods,
+            ExistingNeighborhoods;
         private Thread DuplicationThread;
         private CommonOpenFileDialog FolderBrowser;
-        private readonly string UserNeighborhoodsDirectory = Duplication.GetUserNeighborhoodsDirectory();
+        private readonly string UserNeighborhoodsDirectory =
+            Duplication.GetUserNeighborhoodsDirectory();
         private string CurrentCreatedFolder;
         private readonly Mutex mutex;
 
@@ -189,7 +256,11 @@ namespace Sims2HoodDuplicator
             private readonly string myDirectory;
             private readonly List<string> myScreenshotList;
 
-            public Neighborhood(string strName, string strDirectory, List<string> screenshotList = null)
+            public Neighborhood(
+                string strName,
+                string strDirectory,
+                List<string> screenshotList = null
+            )
             {
                 this.myName = strName;
                 this.myDirectory = strDirectory;
@@ -198,26 +269,17 @@ namespace Sims2HoodDuplicator
 
             public string Name
             {
-                get
-                {
-                    return myName;
-                }
+                get { return myName; }
             }
 
             public string Directory
             {
-                get
-                {
-                    return myDirectory;
-                }
+                get { return myDirectory; }
             }
 
             public List<string> ScreenshotList
             {
-                get
-                {
-                    return myScreenshotList;
-                }
+                get { return myScreenshotList; }
             }
         }
 
@@ -245,12 +307,18 @@ namespace Sims2HoodDuplicator
                 DialogResult result = DialogResult.Yes;
                 if (hasNoNeighborhoodFile)
                 {
-                    result = MessageBox.Show(Strings.No_Neighborhood_Package, "", MessageBoxButtons.YesNo);
+                    result = MessageBox.Show(
+                        Strings.No_Neighborhood_Package,
+                        "",
+                        MessageBoxButtons.YesNo
+                    );
                 }
 
                 if (result == DialogResult.Yes)
                 {
-                    Duplicate(new Neighborhood(Path.GetFileName(duplicatedFolder), duplicatedFolder));
+                    Duplicate(
+                        new Neighborhood(Path.GetFileName(duplicatedFolder), duplicatedFolder)
+                    );
                 }
             }
         }
@@ -280,48 +348,75 @@ namespace Sims2HoodDuplicator
             {
                 try
                 {
-                    string newNeighborhoodName = Duplication.DuplicateNeighborhoodTemplate(neighborhood.Directory, CopyProgressBar, neighborhood.ScreenshotList);
+                    string newNeighborhoodName = Duplication.DuplicateNeighborhoodTemplate(
+                        neighborhood.Directory,
+                        CopyProgressBar,
+                        neighborhood.ScreenshotList
+                    );
                     if (newNeighborhoodName == null)
                     {
-                        MainPanel.Invoke(new Action(() =>
-                        {
-                            ToggleUIEnabled(false);
-                            MessageBox.Show(string.Format(Strings.Error_Copying, neighborhood.Name), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }));
+                        MainPanel.Invoke(
+                            new Action(() =>
+                            {
+                                ToggleUIEnabled(false);
+                                MessageBox.Show(
+                                    string.Format(Strings.Error_Copying, neighborhood.Name),
+                                    Strings.Error,
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error
+                                );
+                            })
+                        );
                     }
                     else
                     {
-                        MainPanel.Invoke(new Action(() =>
-                        {
-                            ToggleUIEnabled(false);
-                            Neighborhood newNeighborhood = new Neighborhood(newNeighborhoodName, Path.Combine(UserNeighborhoodsDirectory, newNeighborhoodName));
-                            ExistingNeighborhoods.Add(newNeighborhood);
-                            if (ExistingRadioButton.Checked)
+                        MainPanel.Invoke(
+                            new Action(() =>
                             {
-                                NeighborhoodDropdown.Items.Add(newNeighborhood);
-                            }
-                            MessageBox.Show(string.Format(Strings.Success, newNeighborhoodName));
-                        }));
+                                ToggleUIEnabled(false);
+                                Neighborhood newNeighborhood = new Neighborhood(
+                                    newNeighborhoodName,
+                                    Path.Combine(UserNeighborhoodsDirectory, newNeighborhoodName)
+                                );
+                                ExistingNeighborhoods.Add(newNeighborhood);
+                                if (ExistingRadioButton.Checked)
+                                {
+                                    NeighborhoodDropdown.Items.Add(newNeighborhood);
+                                }
+                                MessageBox.Show(
+                                    string.Format(Strings.Success, newNeighborhoodName)
+                                );
+                            })
+                        );
                     }
                 }
                 catch (ThreadAbortException) { }
                 catch (Exception)
                 {
-                    MainPanel.Invoke(new Action(() =>
-                    {
-                        ToggleUIEnabled(false);
-                        MessageBox.Show(string.Format(Strings.Error_Copying, neighborhood.Name), Strings.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }));
+                    MainPanel.Invoke(
+                        new Action(() =>
+                        {
+                            ToggleUIEnabled(false);
+                            MessageBox.Show(
+                                string.Format(Strings.Error_Copying, neighborhood.Name),
+                                Strings.Error,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error
+                            );
+                        })
+                    );
                 }
                 finally
                 {
                     DuplicationThread = null;
-                    MainPanel.Invoke(new Action(() =>
-                    {
-                        CopyProgressBar.Value = 0;
-                        DuplicateButton.Text = Strings.Duplicate;
-                        ToggleUIEnabled(true);
-                    }));
+                    MainPanel.Invoke(
+                        new Action(() =>
+                        {
+                            CopyProgressBar.Value = 0;
+                            DuplicateButton.Text = Strings.Duplicate;
+                            ToggleUIEnabled(true);
+                        })
+                    );
                 }
             });
             DuplicationThread.Start();
@@ -334,18 +429,23 @@ namespace Sims2HoodDuplicator
             DuplicationThread.Abort();
             new Thread(() =>
             {
-                string createdDirectory = Path.Combine(UserNeighborhoodsDirectory, CurrentCreatedFolder);
+                string createdDirectory = Path.Combine(
+                    UserNeighborhoodsDirectory,
+                    CurrentCreatedFolder
+                );
                 if (Directory.Exists(createdDirectory))
                 {
                     Directory.Delete(createdDirectory, true);
                 }
                 DuplicationThread = null;
-                MainPanel.Invoke(new Action(() =>
-                {
-                    CopyProgressBar.Value = 0;
-                    DuplicateButton.Text = Strings.Duplicate;
-                    ToggleUIEnabled(true);
-                }));
+                MainPanel.Invoke(
+                    new Action(() =>
+                    {
+                        CopyProgressBar.Value = 0;
+                        DuplicateButton.Text = Strings.Duplicate;
+                        ToggleUIEnabled(true);
+                    })
+                );
             }).Start();
         }
 

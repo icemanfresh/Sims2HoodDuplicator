@@ -5,80 +5,80 @@ using System.Windows.Forms;
 
 namespace Sims2HoodDuplicator
 {
-    internal static class Program
+  internal static class Program
+  {
+    /// <summary>
+    /// The main entry point for the application.
+    /// </summary>
+    [STAThread]
+    static void Main(string[] args)
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main(string[] args)
+      AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHandler);
+
+      if (args.Length >= 2)
+      {
+        if (args[0].Equals("-u"))
         {
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHandler);
+          try
+          {
+            Update.CopyUpdateFile(args[1]);
+            return;
+          }
+          catch (IOException)
+          {
+            MessageBox.Show(Strings.Update_Failed);
+          }
+        }
+        else if (args[0].Equals("-d"))
+        {
+          Update.DeleteUpdateFile(args[1]);
+        }
+      }
 
-            if (args.Length >= 2)
-            {
-                if (args[0].Equals("-u"))
-                {
-                    try
-                    {
-                        Update.CopyUpdateFile(args[1]);
-                        return;
-                    }
-                    catch (IOException)
-                    {
-                        MessageBox.Show(Strings.Update_Failed);
-                    }
-                }
-                else if (args[0].Equals("-d"))
-                {
-                    Update.DeleteUpdateFile(args[1]);
-                }
-            }
+      Mutex mutex = new Mutex(true, "The Sims 2 Hood Duplicator", out bool uniqueInstance);
+      if (!uniqueInstance)
+      {
+        return;
+      }
 
-            Mutex mutex = new Mutex(true, "The Sims 2 Hood Duplicator", out bool uniqueInstance);
-            if (!uniqueInstance)
-            {
-                return;
-            }
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+      Application.EnableVisualStyles();
+      Application.SetCompatibleTextRenderingDefault(false);
 #if !DEBUG
-            if (Update.HasUpdate() && (args.Length < 2 || !args[0].Equals("-u")))
-            {
-                DialogResult result = MessageBox.Show(Strings.Update_Available, "", MessageBoxButtons.YesNo);
-                if(result == DialogResult.Yes)
-                {
-                    while (true)
-                    {
-                        try
-                        {
-                            Update.DownloadUpdate();
-                            return;
-                        }
-                        catch (Exception)
-                        {
-                            result = MessageBox.Show(Strings.Update_Problem, "", MessageBoxButtons.RetryCancel);
-                            if(result == DialogResult.Retry)
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-#endif
-            Application.Run(new MainForm(mutex));
-        }
-
-        private static void ExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+      if (Update.HasUpdate() && (args.Length < 2 || !args[0].Equals("-u")))
+      {
+        DialogResult result = MessageBox.Show(Strings.Update_Available, "", MessageBoxButtons.YesNo);
+        if (result == DialogResult.Yes)
         {
-            Exception ex = (Exception)args.ExceptionObject;
-            MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          while (true)
+          {
+            try
+            {
+              Update.DownloadUpdate();
+              return;
+            }
+            catch (Exception)
+            {
+              result = MessageBox.Show(Strings.Update_Problem, "", MessageBoxButtons.RetryCancel);
+              if (result == DialogResult.Retry)
+              {
+                continue;
+              }
+              else
+              {
+                break;
+              }
+            }
+          }
         }
+      }
+#endif
+      Application.Run(new MainForm(mutex));
     }
+
+    private static void ExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+    {
+      Exception ex = (Exception)args.ExceptionObject;
+      MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+  }
 }
