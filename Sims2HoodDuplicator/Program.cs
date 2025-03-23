@@ -43,6 +43,7 @@ namespace Sims2HoodDuplicator
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+#if !DEBUG
             if (Update.HasUpdate() && (args.Length < 2 || !args[0].Equals("-u")))
             {
                 DialogResult result = MessageBox.Show(Strings.Update_Available, "", MessageBoxButtons.YesNo);
@@ -70,6 +71,7 @@ namespace Sims2HoodDuplicator
                     }
                 }
             }
+#endif
             Application.Run(new MainForm(mutex));
         }
 

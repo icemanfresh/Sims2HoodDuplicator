@@ -17,7 +17,11 @@ namespace Sims2HoodDuplicator
             if (Duplication.GetUserNeighborhoodsDirectory() == null)
             {
                 MessageBox.Show(Strings.Not_Installed);
-                mutex.Close();
+                Load += (s, e) =>
+                {
+                    mutex.Close();
+                    Close();
+                };
                 return;
             }
             this.mutex = mutex;
