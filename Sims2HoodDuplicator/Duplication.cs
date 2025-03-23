@@ -32,7 +32,7 @@ namespace Sims2HoodDuplicator
       return Registry.CurrentUser.OpenSubKey(@"Software\Electronic Arts\The Sims 2 Ultimate Collection 25", false);
     }
 
-    internal static string GetUserNeighborhoodsDirectory(Sims2Variant variant = Sims2Variant.Classic)
+    internal static string GetUserNeighborhoodsDirectory(Sims2Variant variant)
     {
       RegistryKey sims2Subkey = null;
       switch (variant)
@@ -66,7 +66,7 @@ namespace Sims2HoodDuplicator
       );
     }
 
-    internal static string GetNeighborhoodTemplatesDirectory(string pack, bool getStorytellingTemplates = false)
+    internal static string GetClassicNeighborhoodTemplatesDirectory(string pack, bool getStorytellingTemplates = false)
     {
       if (!pack.Equals("The Sims 2") && UltimateCollectionIsInstalled())
       {
@@ -96,6 +96,41 @@ namespace Sims2HoodDuplicator
         var installationDir = value.ToString();
         var neighborhoodDir = Path.Combine(
           installationDir,
+          "TSData",
+          "Res",
+          "UserData",
+          getStorytellingTemplates ? "Storytelling" : "Neighborhoods"
+        );
+        if (Directory.Exists(neighborhoodDir))
+        {
+          return neighborhoodDir;
+        }
+      }
+
+      return null;
+    }
+
+    internal static string GetLegacyNeighborhoodTemplatesDirectory(string pack, bool getStorytellingTemplates = false)
+    {
+      // Steam
+      var steamSubkey = Registry.LocalMachine.OpenSubKey(
+        @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 3314070",
+        false
+      );
+
+      if (steamSubkey != null)
+      {
+        var value = steamSubkey.GetValue("InstallLocation");
+        steamSubkey.Close();
+        if (value == null)
+        {
+          return null;
+        }
+
+        var installationDir = value.ToString();
+        var neighborhoodDir = Path.Combine(
+          installationDir,
+          pack,
           "TSData",
           "Res",
           "UserData",
@@ -170,25 +205,26 @@ namespace Sims2HoodDuplicator
     }
 
     internal static string DuplicateNeighborhoodTemplate(
+      Sims2Variant variant,
       string sourceDir,
       ProgressBar progressBar = null,
       List<string> sourceStorytellingFiles = null
     )
     {
-      string newFolderName = GetNextUnusedNeighborhoodFolder();
+      string newFolderName = GetNextUnusedNeighborhoodFolder(variant);
       if (newFolderName == null)
       {
         return null;
       }
 
-      string neighborhoodsDir = GetUserNeighborhoodsDirectory();
+      string neighborhoodsDir = GetUserNeighborhoodsDirectory(variant);
       if (!Directory.Exists(neighborhoodsDir))
       {
         Directory.CreateDirectory(neighborhoodsDir);
       }
 
-      List<uint> usedNIDs = GetUsedNIDs();
-      string newDirectory = Path.Combine(GetUserNeighborhoodsDirectory(), newFolderName);
+      List<uint> usedNIDs = GetUsedNIDs(variant);
+      string newDirectory = Path.Combine(GetUserNeighborhoodsDirectory(variant), newFolderName);
       string sourceFolderName = Path.GetFileName(sourceDir);
       string destFolderName = Path.GetFileName(newDirectory);
       CopiedBytes = 0;
@@ -406,9 +442,9 @@ namespace Sims2HoodDuplicator
       return size;
     }
 
-    internal static string GetNextUnusedNeighborhoodFolder()
+    internal static string GetNextUnusedNeighborhoodFolder(Sims2Variant variant)
     {
-      string userNeighborhoodsDirectory = GetUserNeighborhoodsDirectory();
+      string userNeighborhoodsDirectory = GetUserNeighborhoodsDirectory(variant);
       if (!Directory.Exists(userNeighborhoodsDirectory))
       {
         Directory.CreateDirectory(userNeighborhoodsDirectory);
@@ -448,10 +484,10 @@ namespace Sims2HoodDuplicator
       }
     }
 
-    internal static List<uint> GetUsedNIDs()
+    internal static List<uint> GetUsedNIDs(Sims2Variant variant)
     {
       List<uint> usedNIDs = new List<uint>();
-      DirectoryInfo directoryInfo = Directory.CreateDirectory(GetUserNeighborhoodsDirectory());
+      DirectoryInfo directoryInfo = Directory.CreateDirectory(GetUserNeighborhoodsDirectory(variant));
       DirectoryInfo[] userNeighborhoods = directoryInfo.GetDirectories();
       foreach (DirectoryInfo neighborhood in userNeighborhoods)
       {

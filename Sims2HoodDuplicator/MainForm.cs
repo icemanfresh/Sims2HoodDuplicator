@@ -11,8 +11,6 @@ namespace Sims2HoodDuplicator
 {
   public partial class MainForm : Form
   {
-    private readonly Sims2Variant variant;
-
     public MainForm(Mutex mutex)
     {
       Icon = Properties.Resources.Icon;
@@ -45,6 +43,7 @@ namespace Sims2HoodDuplicator
         return;
       }
       this.mutex = mutex;
+      UserNeighborhoodsDirectory = Duplication.GetUserNeighborhoodsDirectory(variant);
       Application.ApplicationExit += OnExit;
       InitializeComponent();
       InitializeFolderBrowser();
@@ -57,7 +56,7 @@ namespace Sims2HoodDuplicator
     {
       FolderBrowser = new CommonOpenFileDialog
       {
-        InitialDirectory = Duplication.GetUserNeighborhoodsDirectory(),
+        InitialDirectory = Duplication.GetUserNeighborhoodsDirectory(variant),
         IsFolderPicker = true,
       };
     }
@@ -79,9 +78,13 @@ namespace Sims2HoodDuplicator
         NewNeighborhoods = new List<Neighborhood>();
         NeighborhoodDropdown.DisplayMember = "Name";
         NeighborhoodDropdown.ValueMember = "Directory";
-        foreach (string pack in Packs)
+        var packs = variant == Sims2Variant.Classic ? ClassicPacks : LegacyPacks;
+        foreach (string pack in packs)
         {
-          string neighborhoodTemplatesDirectory = Duplication.GetNeighborhoodTemplatesDirectory(pack);
+          string neighborhoodTemplatesDirectory =
+            variant == Sims2Variant.Classic
+              ? Duplication.GetClassicNeighborhoodTemplatesDirectory(pack)
+              : Duplication.GetLegacyNeighborhoodTemplatesDirectory(pack);
           if (neighborhoodTemplatesDirectory != null && Directory.Exists(neighborhoodTemplatesDirectory))
           {
             string[] dirs = Directory.GetDirectories(neighborhoodTemplatesDirectory);
@@ -94,7 +97,11 @@ namespace Sims2HoodDuplicator
                 {
                   List<string> screenshotFiles = new List<string>();
                   List<string> storytellingIDs = NeighborhoodStorytellingIDMappings[folderName];
-                  string[] files = Directory.GetFiles(Duplication.GetNeighborhoodTemplatesDirectory(pack, true));
+                  string[] files = Directory.GetFiles(
+                    variant == Sims2Variant.Classic
+                      ? Duplication.GetClassicNeighborhoodTemplatesDirectory(pack, getStorytellingTemplates: true)
+                      : Duplication.GetLegacyNeighborhoodTemplatesDirectory(pack, getStorytellingTemplates: true)
+                  );
                   foreach (string file in files)
                   {
                     string fileName = new FileInfo(file).Name;
@@ -182,13 +189,14 @@ namespace Sims2HoodDuplicator
     private System.Windows.Forms.ProgressBar CopyProgressBar;
     private System.Windows.Forms.PictureBox NeighborhoodImageBox;
 
-    private readonly string[] Packs = new string[]
+    private readonly string[] ClassicPacks = new string[]
     {
       "The Sims 2",
       "The Sims 2 Seasons",
       "The Sims 2 FreeTime",
       "The Sims 2 Apartment Life",
     };
+    private readonly string[] LegacyPacks = new string[] { "Base", "EP5", "EP7", "EP8" };
     private readonly Dictionary<string, string> FolderNeighborhoodNameMappings = new Dictionary<string, string>
     {
       { "N001", Strings.Pleasantview },
@@ -220,9 +228,10 @@ namespace Sims2HoodDuplicator
       ExistingNeighborhoods;
     private Thread DuplicationThread;
     private CommonOpenFileDialog FolderBrowser;
-    private readonly string UserNeighborhoodsDirectory = Duplication.GetUserNeighborhoodsDirectory();
+    private readonly string UserNeighborhoodsDirectory;
     private string CurrentCreatedFolder;
     private readonly Mutex mutex;
+    private readonly Sims2Variant variant;
 
     public class Neighborhood
     {
@@ -292,7 +301,7 @@ namespace Sims2HoodDuplicator
       ToggleUIEnabled(false);
       if (DuplicationThread == null)
       {
-        CurrentCreatedFolder = Duplication.GetNextUnusedNeighborhoodFolder();
+        CurrentCreatedFolder = Duplication.GetNextUnusedNeighborhoodFolder(variant);
         if (!Directory.Exists(neighborhood.Directory))
         {
           RefreshDropDown();
@@ -313,6 +322,7 @@ namespace Sims2HoodDuplicator
         try
         {
           string newNeighborhoodName = Duplication.DuplicateNeighborhoodTemplate(
+            variant,
             neighborhood.Directory,
             CopyProgressBar,
             neighborhood.ScreenshotList
