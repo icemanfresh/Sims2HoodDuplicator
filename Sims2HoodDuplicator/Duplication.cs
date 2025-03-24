@@ -112,6 +112,9 @@ namespace Sims2HoodDuplicator
 
     internal static string GetLegacyNeighborhoodTemplatesDirectory(string pack, bool getStorytellingTemplates = false)
     {
+      // You can install both the Steam and EA versions at the same time...but since they have the same templates,
+      // we just need to retrieve one of them
+
       // Steam
       var steamSubkey = Registry.LocalMachine.OpenSubKey(
         @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 3314070",
@@ -127,6 +130,36 @@ namespace Sims2HoodDuplicator
           return null;
         }
 
+        var installationDir = value.ToString();
+        var neighborhoodDir = Path.Combine(
+          installationDir,
+          pack,
+          "TSData",
+          "Res",
+          "UserData",
+          getStorytellingTemplates ? "Storytelling" : "Neighborhoods"
+        );
+        if (Directory.Exists(neighborhoodDir))
+        {
+          return neighborhoodDir;
+        }
+      }
+
+      // EA
+      string keyName = string.Format(
+        @"SOFTWARE{0}\Maxis\The Sims 2 Legacy",
+        Environment.Is64BitProcess ? @"\WOW6432Node" : "",
+        pack
+      );
+      var eaSubkey = Registry.LocalMachine.OpenSubKey(keyName, false);
+      if (eaSubkey != null)
+      {
+        var value = eaSubkey.GetValue("Install Dir");
+        eaSubkey.Close();
+        if (value == null)
+        {
+          return null;
+        }
         var installationDir = value.ToString();
         var neighborhoodDir = Path.Combine(
           installationDir,
