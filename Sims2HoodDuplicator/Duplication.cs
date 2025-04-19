@@ -51,13 +51,13 @@ namespace Sims2HoodDuplicator
       }
 
       string valueName = "DisplayName";
-      var value = sims2Subkey.GetValue(valueName);
+      var displayName = sims2Subkey.GetValue(valueName)?.ToString();
       sims2Subkey.Close();
-      if (value == null)
+      if (displayName == null)
       {
         return null;
       }
-      string displayName = value.ToString();
+
       return Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
         "EA Games",
@@ -84,27 +84,24 @@ namespace Sims2HoodDuplicator
         return null;
       }
 
-      var possibleInstallDirValues = new[] { "Install Dir", "Install Dir Parent" };
-      foreach (var installDirValue in possibleInstallDirValues)
+      string valueName = "Install Dir";
+      string installationDir = packSubkey.GetValue(valueName)?.ToString();
+      packSubkey.Close();
+      if (installationDir == null)
       {
-        var value = packSubkey.GetValue(installDirValue);
-        packSubkey.Close();
-        if (value == null)
-        {
-          continue;
-        }
-        var installationDir = value.ToString();
-        var neighborhoodDir = Path.Combine(
-          installationDir,
-          "TSData",
-          "Res",
-          "UserData",
-          getStorytellingTemplates ? "Storytelling" : "Neighborhoods"
-        );
-        if (Directory.Exists(neighborhoodDir))
-        {
-          return neighborhoodDir;
-        }
+        return null;
+      }
+
+      var neighborhoodDir = Path.Combine(
+        installationDir,
+        "TSData",
+        "Res",
+        "UserData",
+        getStorytellingTemplates ? "Storytelling" : "Neighborhoods"
+      );
+      if (Directory.Exists(neighborhoodDir))
+      {
+        return neighborhoodDir;
       }
 
       return null;
@@ -123,14 +120,13 @@ namespace Sims2HoodDuplicator
 
       if (steamSubkey != null)
       {
-        var value = steamSubkey.GetValue("InstallLocation");
+        var installationDir = steamSubkey.GetValue("InstallLocation")?.ToString();
         steamSubkey.Close();
-        if (value == null)
+        if (installationDir == null)
         {
           return null;
         }
 
-        var installationDir = value.ToString();
         var neighborhoodDir = Path.Combine(
           installationDir,
           pack,
@@ -154,13 +150,13 @@ namespace Sims2HoodDuplicator
       var eaSubkey = Registry.LocalMachine.OpenSubKey(keyName, false);
       if (eaSubkey != null)
       {
-        var value = eaSubkey.GetValue("Install Dir");
+        var installationDir = eaSubkey.GetValue("Install Dir")?.ToString();
         eaSubkey.Close();
-        if (value == null)
+        if (installationDir == null)
         {
           return null;
         }
-        var installationDir = value.ToString();
+
         var neighborhoodDir = Path.Combine(
           installationDir,
           pack,
@@ -191,7 +187,7 @@ namespace Sims2HoodDuplicator
       }
 
       string valueName = "Install Dir";
-      string installationDir = packSubkey.GetValue(valueName).ToString();
+      string installationDir = packSubkey.GetValue(valueName)?.ToString() ?? string.Empty;
       packSubkey.Close();
       return installationDir.Contains("Ultimate Collection");
     }
@@ -208,30 +204,27 @@ namespace Sims2HoodDuplicator
         return null;
       }
 
-      var possibleInstallDirValues = new[] { "Install Dir", "Install Dir Parent" };
-      foreach (var installDirValue in possibleInstallDirValues)
+      string valueName = "Install Dir";
+      var installationDir = packSubkey.GetValue(valueName)?.ToString();
+      packSubkey.Close();
+      if (installationDir == null)
       {
-        var value = packSubkey.GetValue(installDirValue);
-        packSubkey.Close();
-        if (value == null)
-        {
-          continue;
-        }
-        var installationDir = value.ToString();
-        var neighborhoodDir = Path.Combine(
-          installationDir,
-          "..",
-          "..",
-          PackToUCFolderMappings[pack],
-          "TSData",
-          "Res",
-          "UserData",
-          getStorytellingTemplates ? "Storytelling" : "Neighborhoods"
-        );
-        if (Directory.Exists(neighborhoodDir))
-        {
-          return neighborhoodDir;
-        }
+        return null;
+      }
+
+      var neighborhoodDir = Path.Combine(
+        installationDir,
+        "..",
+        "..",
+        PackToUCFolderMappings[pack],
+        "TSData",
+        "Res",
+        "UserData",
+        getStorytellingTemplates ? "Storytelling" : "Neighborhoods"
+      );
+      if (Directory.Exists(neighborhoodDir))
+      {
+        return neighborhoodDir;
       }
 
       return null;

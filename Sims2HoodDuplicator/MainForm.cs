@@ -85,7 +85,7 @@ namespace Sims2HoodDuplicator
             variant == Sims2Variant.Classic
               ? Duplication.GetClassicNeighborhoodTemplatesDirectory(pack)
               : Duplication.GetLegacyNeighborhoodTemplatesDirectory(pack);
-          if (neighborhoodTemplatesDirectory != null && Directory.Exists(neighborhoodTemplatesDirectory))
+          if (neighborhoodTemplatesDirectory != null)
           {
             string[] dirs = Directory.GetDirectories(neighborhoodTemplatesDirectory);
             foreach (string dir in dirs)
